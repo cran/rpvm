@@ -2,7 +2,7 @@
 ## problems.  Should we do the same, or "directly map"?  (i.e. we
 ## would have to consider "try"...)
 
-## $Id: rpvm.R,v 1.28 2002/01/30 21:53:16 snake Exp $
+## $Id: rpvm.R,v 1.29 2002/03/18 23:48:13 snake Exp $
 
 .PVM.encoding <- 0:2
 names (.PVM.encoding) <- c("Default",
@@ -47,10 +47,10 @@ names (.PVM.encoding) <- c("Default",
                         ntask = 1,
                         flag  = "Default",
                         where = "",
-                        arglist = "") {    
+                        arglist = NULL) {    
     .PVM.spawnflags <- c (0, 2^(0:5))
     names (.PVM.spawnflags) <- c("Default", "Host", "Arch",
-                                 "Debug", "Trace", "MppFront", "Compl")   
+                                 "Debug", "Trace", "MppFront", "Compl")
     tids <- .Call ("rpvm_spawn",
                    as.character (task),
                    as.integer   (ntask),

@@ -1,5 +1,5 @@
 /*
- * $Id: utils.c,v 1.1 2001/11/20 21:46:38 snake Exp $
+ * $Id: utils.c,v 1.2 2002/03/18 23:47:38 snake Exp $
  */
 
 #include "utils.h"
@@ -36,9 +36,10 @@ char **toPPChar (SEXP sexp_str)
     int  i;
     int  len = LENGTH (sexp_str);
     /* Temporary memory will be released after exiting .Call */
-    ppchar = (char **) R_alloc (len, sizeof (char *));
+    ppchar = (char **) R_alloc (len + 1, sizeof (char *));
     for (i = 0; i < len; ++i) {
         ppchar[i] = CHAR (STRING_ELT (sexp_str, i));
     }
+    ppchar[len] = (char *) 0;
     return ppchar;
 }
