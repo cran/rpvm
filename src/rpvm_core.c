@@ -1,5 +1,5 @@
 /*
- * $Id: rpvm_core.c,v 1.21 2004/03/12 23:11:52 nali Exp $
+ * $Id: rpvm_core.c,v 1.22 2004/05/25 22:18:29 nali Exp $
  */
 
 #include "utils.h"
@@ -106,6 +106,7 @@ int rpvm_chkerror (int error_code, int exit_pvm)
     }
     /* Exit pvmd (necessary for all errors??) */
     if (exit_pvm) {
+        pvm_perror ("Error encountered. Exiting PVM ...\n");
         pvm_exit ();
     }
     return error_code;
@@ -281,7 +282,7 @@ SEXP rpvm_spawn (SEXP sexp_task,
 SEXP rpvm_initsend (SEXP sexp_encode)
 {
     int encode = INTEGER (sexp_encode)[0];
-    return mkInt (rpvm_chkerror (pvm_initsend (encode), 1));
+    return mkInt (rpvm_chkerror (pvm_initsend (encode), 0));
 }
 
 /**

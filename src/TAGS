@@ -1,0 +1,92 @@
+
+rpvm_core.c,2263
+int rpvm_chkerror 8,104
+SEXP rpvm_mytid 116,2957
+SEXP rpvm_parent 121,3033
+SEXP rpvm_exit 131,3212
+SEXP rpvm_pstats 136,3285
+SEXP rpvm_kill 161,4053
+SEXP rpvm_tasks 178,4390
+SEXP rpvm_spawn 227,6101
+SEXP rpvm_initsend 281,7579
+SEXP rpvm_mkbuf 291,7828
+SEXP rpvm_freebuf 300,8007
+SEXP rpvm_getsbuf 309,8194
+SEXP rpvm_getrbuf 317,8323
+SEXP rpvm_setsbuf 326,8518
+SEXP rpvm_setrbuf 336,8777
+SEXP rpvm_pkint 344,8938
+SEXP rpvm_pkdouble 353,9172
+SEXP rpvm_pkstr 362,9412
+SEXP rpvm_pkintvec 368,9549
+SEXP rpvm_pkdblvec 380,9792
+SEXP rpvm_pkstrvec 391,10034
+SEXP rpvm_pkintmat 406,10390
+SEXP rpvm_pkdblmat 433,11034
+SEXP rpvm_send 461,11714
+SEXP rpvm_mcast 471,11978
+SEXP rpvm_recv 479,12224
+SEXP rpvm_nrecv 489,12489
+SEXP rpvm_probe 499,12727
+SEXP rpvm_trecv 509,12967
+SEXP rpvm_bufinfo 529,13570
+SEXP rpvm_upkint 552,14060
+SEXP rpvm_upkdouble 568,14422
+SEXP rpvm_upkstr 582,14785
+SEXP rpvm_upkstrvec 595,15046
+SEXP rpvm_upkintvec 619,15608
+SEXP rpvm_upkdblvec 638,15962
+SEXP rpvm_upkintmat 656,16316
+SEXP rpvm_upkdblmat 674,16666
+SEXP rpvm_config 693,17047
+SEXP rpvm_start_pvmd 728,18109
+SEXP rpvm_addhosts 736,18359
+SEXP rpvm_delhosts 751,18761
+SEXP rpvm_halt 766,19163
+SEXP rpvm_mstats 771,19237
+SEXP rpvm_joingroup 801,20142
+SEXP rpvm_lvgroup 809,20372
+SEXP rpvm_gettid 816,20546
+SEXP rpvm_getinst 831,20974
+SEXP rpvm_gsize 845,21395
+SEXP rpvm_barrier 852,21565
+SEXP rpvm_bcast 860,21804
+SEXP rpvm_scatter_integer 868,22043
+SEXP rpvm_scatter_double 891,22805
+SEXP rpvm_gather_integer 914,23560
+SEXP rpvm_gather_double 951,24703
+SEXP rpvm_reduce_integer 988,25842
+SEXP rpvm_reduce_double 1036,27178
+SEXP rpvm_setopt 1089,28611
+SEXP rpvm_getopt 1097,28846
+SEXP rpvm_tidtohost 1107,29117
+SEXP rpvm_notify 1113,29254
+SEXP rpvm_unnotify 1121,29604
+SEXP rpvm_newcontext 1132,30014
+SEXP rpvm_setcontext 1137,30081
+SEXP rpvm_freecontext 1142,30182
+SEXP rpvm_getcontext 1149,30333
+SEXP rpvm_pkmesg 1157,30488
+SEXP rpvm_upkmesg 1163,30625
+SEXP rpvm_pkmesgbody 1169,30734
+SEXP rpvm_putinfo 1177,30902
+SEXP rpvm_recvinfo 1186,31205
+SEXP rpvm_delinfo 1195,31510
+SEXP rpvm_getmboxinfo 1203,31767
+int rpvm_hostadded(1211,32027
+SEXP rpvm_notify_hostadded(1219,32171
+SEXP rpvm_unnotify_hostadded(1228,32395
+
+rpvm_ser.c,191
+static void OutChar(8,150
+static void OutBytes(15,283
+static int InChar(20,405
+static void InBytes(27,532
+static SEXP CallHook(34,731
+SEXP rpvm_pksexp 43,918
+SEXP rpvm_upksexp 55,1254
+
+utils.c,63
+SEXP mkInt 10,130
+SEXP mkReal 19,294
+char **toPPChar 31,544

@@ -3,7 +3,7 @@
 ## problems.  Should we do the same, or "directly map"?  (i.e. we
 ## would have to consider "try"...)
 
-## $Id: rpvm.R,v 1.41 2004/05/17 05:00:52 nali Exp $
+## $Id: rpvm.R,v 1.42 2004/05/25 22:18:29 nali Exp $
 
 .PVM.encoding <- 0:2
 names (.PVM.encoding) <- c("Default",
@@ -60,8 +60,9 @@ names (.PVM.encoding) <- c("Default",
     total.flag <- 0
     for (myflag in flag) {
         this.flag <- match.arg (myflag, names (.PVM.spawnflags))
-        if (verbose)
-            print (paste ("Flag ", this.flag, " matched\n"))
+        if (verbose) {
+            cat (paste ("Flag ", this.flag, " matched\n"))
+        }
         total.flag <- total.flag + .PVM.spawnflags[this.flag]
     }
     tids <- .Call ("rpvm_spawn",
@@ -586,13 +587,26 @@ init.sprng.group <- function (group,
     init.sprng (.PVM.gsize (group), .PVM.getinst (), seed,
                 kindprng, para)
 }
-## (Un)Serialization using the serialize package
-.PVM.serialize <- function (object, refhook = NULL) {
-    str <- serialize (object, NULL, TRUE, refhook)
-    .PVM.pkstr (str)
-    return (invisible (str))
-}
-.PVM.unserialize <- function (refhook = NULL) {
-    str <- .PVM.upkstr ()
-    unserialize (str, refhook)
-}
+
+# ## (Un)Serialization using the serialize package
+# .PVM.serialize <- function (object, refhook = NULL) {
+#     cat ("object = \n")
+#     print (object)
+#     cat ("\n")
+#     str <- serialize (object, NULL, TRUE, refhook)
+#     print (str)
+#     .PVM.pkstr (str)
+#     return (invisible (str))
+# }
+# .PVM.unserialize <- function (refhook = NULL) {
+#     str <- .PVM.upkstr ()
+#     unserialize (str, refhook)
+# }
+
+
+## (Un)Serialization of R objects (by  Luke Tierney <luke@stat.umn.edu>)
+.PVM.serialize <- function(object, refhook = NULL)
+    .Call("rpvm_pksexp", object, refhook, PACKAGE = "rpvm")
+
+.PVM.unserialize <- function(refhook = NULL)
+    .Call("rpvm_upksexp", refhook, PACKAGE = "rpvm")

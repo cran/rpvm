@@ -18,7 +18,7 @@
 ## 2. defined as environmental variables on each host
 ## 3. otherwise, this script provides default position.
 
-echo $1 $2 $3
+echo $1 $2 $3 >> $logfile
 
 logfile=/tmp/rpvm.$$.log
 
@@ -34,7 +34,7 @@ outfile=$base.$$.Rout
 ## Directory of input file (relative to rpvm installation) supplied as the
 ## second argument
 indir=$2
-echo "input file is $indir/$infile"
+echo "input file is $indir/$infile" >> $logfile
 OUT=$3/$outfile
 echo "output file is $OUT" >> $logfile
 
