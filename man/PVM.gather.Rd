@@ -7,8 +7,7 @@
   array.
 }
 \usage{
-.PVM.gather (x, count = length (x),
-             msgtag, group, rootginst = 0)
+.PVM.gather (x, count = length (x), msgtag, group, rootginst = 0)
 }
 \arguments{
   \item{x}{an integer or double vector of length at least \code{count}}

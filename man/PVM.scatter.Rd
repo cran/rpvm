@@ -38,7 +38,7 @@
   number in the group.
   
   \code{x} has to be a vector of storage mode integer or double.  The
-  \code{.PVM.scatter.default} function just calls \code{stop ()}.
+  \code{.PVM.scatter} function just calls \code{stop ()}.
 }
 \references{
   PVM documentation

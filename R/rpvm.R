@@ -3,7 +3,7 @@
 ## problems.  Should we do the same, or "directly map"?  (i.e. we
 ## would have to consider "try"...)
 
-## $Id: rpvm.R,v 1.39 2004/04/15 19:10:30 nali Exp $
+## $Id: rpvm.R,v 1.41 2004/05/17 05:00:52 nali Exp $
 
 .PVM.encoding <- 0:2
 names (.PVM.encoding) <- c("Default",
@@ -586,23 +586,13 @@ init.sprng.group <- function (group,
     init.sprng (.PVM.gsize (group), .PVM.getinst (), seed,
                 kindprng, para)
 }
-
-## (Un)Serialization of R objects (by  Luke Tierney <luke@stat.umn.edu>)
-.PVM.serialize <- function(object, refhook = NULL)
-    .Call("rpvm_pksexp", object, refhook, PACKAGE = "rpvm")
-
-.PVM.unserialize <- function(refhook = NULL)
-    .Call("rpvm_upksexp", refhook, PACKAGE = "rpvm")
-
 ## (Un)Serialization using the serialize package
 .PVM.serialize <- function (object, refhook = NULL) {
-    require (serialize)
     str <- serialize (object, NULL, TRUE, refhook)
     .PVM.pkstr (str)
     return (invisible (str))
 }
 .PVM.unserialize <- function (refhook = NULL) {
-    require (serialize)
     str <- .PVM.upkstr ()
     unserialize (str, refhook)
 }

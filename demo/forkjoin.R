@@ -1,3 +1,8 @@
+
+## $Id: forkjoin.R,v 1.3 2004/05/17 04:47:16 nali Exp $
+
+require (rpvm)
+
 forkjoin.pvm <- function (nfork = 3) {
 
     JOINTAG <- 11

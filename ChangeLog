@@ -1,54 +1,75 @@
+2004-05-16  Na Li  <nali@umn.edu>
+
+	* DESCRIPTION: updated version to 0.6.1.
+	* R/rpvm.R: removed old .PVM.(un)serialize () that uses
+	rpvm_ser.c. Removed 'require(serialize)' statements.
+	* src/rpvm_ser.c: deleted.
+
+2004-04-15  Na Li  <nali@umn.edu>
+
+	* Version 0.6 released.
+	* configure.in: fixed bugs when PVM_ROOT is not defined.
+	* DESCRIPTION: updated email info and required R version.
+	* tests: removed test scripts.
+	* demo: added demo scripts.
+	* R CMD check: warnings fixed.
+	* PVM.spawn, PVM.spawnR: updated. slaveR.sh now needs to be
+	relocated to $PVM_ROOT/bin/$PVM_ARCH or somewhere else pvmd can
+	find on each node.  The slave R script is specified using a
+	relative path so it can be located on each slave.
+	
 2002-04-22: Version 0.5.0       Na (Michael) Li <lina@u.washington.edu>
 
-    * Splited rsprng out as a separate library but retain a couple of
-      interface functions to rsprng for convenience.
-    * Added serialization code by Luke Tierney <luke@stat.umn.edu>.
+	* Splited rsprng out as a separate library but retain a couple of
+	in terface functions to rsprng for convenience.  
+	* Added	serialization code by Luke Tierney <luke@stat.umn.edu>.
 
 2002-03-08: Version 0.4.2       Na (Michael) Li <lina@u.washington.edu>
     
-    * Fixed a bug in rpvm_spawn where the last element of (char **) argv
-      should be NULL.  There were two bug reports (thanks to Kurt Hornik
-      <Kurt.Hornik@wu-wien.ac.at> and R. Woodrow Setzer, Jr.
-      <Setzer.Woodrow@epamail.epa.gov>) about sporadic segfault in pvm_pkstr
-      called by pvm_spawn.  Hopefully this will now be fixed.
+	* Fixed a bug in rpvm_spawn where the last element of (char **)
+	argv should be NULL.  There were two bug reports (thanks to Kurt
+	Hornik <Kurt.Hornik@wu-wien.ac.at> and R. Woodrow Setzer, Jr.
+	<Setzer.Woodrow@epamail.epa.gov>) about sporadic segfault in
+	pvm_pkstr called by pvm_spawn.  Hopefully this will now be fixed.
 
 2002-03-08: Version 0.4.2       Na (Michael) Li <lina@u.washington.edu>
 
-    * Use try () to start pvmd and use .path.package () to locate installed
-      files (suggested by Kurt Hornik).
+	* Use try () to start pvmd and use .path.package () to locate
+	installed files (suggested by Kurt Hornik).
 
 2002-01-30: Version 0.4.1       Na (Michael) Li <lina@u.washington.edu>
 
-    * 0.4 failed check on Debian.  Seem to be fixed in 0.4.1.
+	* 0.4 failed check on Debian.  Seem to be fixed in 0.4.1.
 
 2002-01-15: Version 0.4         Na (Michael) Li <lina@u.washington.edu>
 
-    * Version 0.4 released.
+	* Version 0.4 released.
 
-    * Wrapped in parallel random number generator library SPRNG.
+	* Wrapped in parallel random number generator library SPRNG.
 
 2001-09-20: Version 0.3          Na (Michael) Li <lina@u.washington.edu>
 
-    * Version 0.3 released.
+	* Version 0.3 released.
 
-    * Group functions implemented with a test script.
+	* Group functions implemented with a test script.
 
-    * Now the test scripts (pvm_test.R, group_test.R) should run at R CMD
-      check with only minimal requirement that pvm is installed properly 
-      (no need to specify path, etc.).
+	* Now the test scripts (pvm_test.R, group_test.R) should run at R
+	CMD check with only minimal requirement that pvm is installed
+	properly (no need to specify path, etc.).
 
-    * It is no longer needed to move the slaveR.sh script anywhere.
+	* It is no longer needed to move the slaveR.sh script anywhere.
 
 2001-09-03: Version 0.2.1       Na (Michael) Li <lina@u.washington.edu> 
 
-    * Version 0.2.1 released.
+	* Version 0.2.1 released.
 
-    * Cleaned up documentation.  Added README for installation instruction.
+	* Cleaned up documentation.  Added README for installation
+	instruction.
 
-    * Added configure script.
+	* Added configure script.
 
-    * Added ./tests directory and move hello.R from demo/ to tests/.
+	* Added ./tests directory and move hello.R from demo/ to tests/.
 
 2001-09-01: Version 0.2         Na (Michael) Li <lina@u.washington.edu> 
 
-    * Version 0.2 released.
+	* Version 0.2 released.
