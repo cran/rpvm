@@ -36,3 +36,10 @@ PVM.scatter              Scatter a vector across the group
 .PVM.trecv               Timeout receive
 PVM.unpack               Unpacking data
 PVMD                     Vitural Machine Control
+free.sprng               Free memory used by SPRNG
+init.sprng               Initialize SPRNG (Scalable Parallel Random
+                         Number Generator)
+pack.sprng               Pack the RNG state into a string.
+spawn.sprng              Spawn new random number streams based on the
+                         current one.
+unpack.sprng             Unpack a string encoding the RNG state.

@@ -12,16 +12,11 @@ jointag <- 22
 
 ## Function to be executed by the master
 master.f <- function (numChild = 1) {
-    ## Spawn children
-    cat ("## Spawning ", numChild, "children \n")
-    curdir <- getwd ()
-    shscript <- file.path (.lib.loc[1], "rpvm", "slaveR.sh")
-    children <- .PVM.spawn (task = shscript,
-                            ntask = numChild,
-                            arglist = c("pvm_test", curdir, curdir))
+    ## Spawn children 
+    children <- .PVM.spawnR (slave = "pvm_test", ntask = 1)
     if (all (children < 0)) {
+        warning ("Failed to spawn any tasks\n")
         .PVM.exit ()
-        stop ("Failed to spawn any task: \n")
     } else if (any (children < 0)) {
         cat ("Failed to spawn some tasks.  Successfully spawned ",
              sum(children > 0), "tasks\n")
@@ -85,18 +80,16 @@ slave.f <- function (myparent) {
 }
 
 ## Actuall codes
-
 if (is.na (.PVM.config ())) {
+    cat ("pvmd is not running. Try to start pvmd...\n")
     .PVM.start.pvmd (file.path (.lib.loc[1], "rpvm", "pvmhosts"))
 }
 
 ## Register the master into PVM
 myparent <- .PVM.parent ()
 if (myparent == 0) {
-    conf <- .PVM.config ()
-    print (conf)
     ## This is master
-    master.f ()
+    master.f (1)
 } else {
     ## This is slave
     slave.f ()

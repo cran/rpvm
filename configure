@@ -11,6 +11,8 @@
 ac_help=
 ac_default_prefix=/usr/local
 # Any additions from configure.in:
+ac_help="$ac_help
+   --with-sprng=/path/to/sprng          Location of SPRNG library."
 
 # Initialize some variables set by options.
 # The variables have the same names as the options, with
@@ -522,9 +524,14 @@ fi
 
 
 
+echo -n "Check if PVM_ROOT is defined... "
 if test -z "${PVM_ROOT}"; then
+    echo "no"
     echo "Warning: PVM_ROOT not defined."
-    echo "Try to guess where pvm is installed..."
+    echo "I'll try to build rpvm but you need set PVM_ROOT"
+    echo "before use pvm. See pvm_intro(1PVM)"
+    echo ""
+    echo "Try to guess if pvm is installed somewhere ..."
     if test -d /usr/lib/pvm3; then                      # Debian
         PVM_ROOT=/usr/lib/pvm3
     elif test -d /usr/share/pvm3; then                  # Red Hat
@@ -532,16 +539,23 @@ if test -z "${PVM_ROOT}"; then
     elif test -d ${HOME}/pvm3; then                     # User installed
         PVM_ROOT=${HOME}/pvm3
     fi
-    if test -n "${PVM_ROOT}"; then
+else
+    echo "${PVM_ROOT}"
+fi
+
+if test -n "${PVM_ROOT}"; then
+    if test -d "${PVM_ROOT}/conf"; then 
         echo "Found pvm: ${PVM_ROOT} "
-        echo "Warning: You need set PVM_ROOT to ${PVM_ROOT} before use pvm."
-        echo "See pvm_intro(1PVM)"
     else
-        echo "Cannot find pvm."
-        echo "If pvm is installed, set PVM_ROOT to where pvm is."
-        echo "Otherwise, please install pvm first."
+        echo "Invalid PVM_ROOT.  Cannot find ${PVM_ROOT}/conf"
         exit 1
     fi
+else
+    echo " Cannot find pvm."
+    echo " If pvm is installed, set PVM_ROOT to where pvm is or specify"
+    echo " its location in --with-pvm."
+    echo " Otherwise, please install pvm first."
+    exit 1
 fi
 
 echo "PVM_ROOT is ${PVM_ROOT}"
@@ -553,7 +567,7 @@ fi
 echo "PVM_ARCH is ${PVM_ARCH}"
 
 echo $ac_n "checking how to run the C preprocessor""... $ac_c" 1>&6
-echo "configure:557: checking how to run the C preprocessor" >&5
+echo "configure:571: checking how to run the C preprocessor" >&5
 # On Suns, sometimes $CPP names a directory.
 if test -n "$CPP" && test -d "$CPP"; then
   CPP=
@@ -568,13 +582,13 @@ else
   # On the NeXT, cc -E runs the code through the compiler's parser,
   # not just through cpp.
   cat > conftest.$ac_ext <<EOF
-#line 572 "configure"
+#line 586 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:578: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:592: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   :
@@ -585,13 +599,13 @@ else
   rm -rf conftest*
   CPP="${CC-cc} -E -traditional-cpp"
   cat > conftest.$ac_ext <<EOF
-#line 589 "configure"
+#line 603 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:595: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:609: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   :
@@ -602,13 +616,13 @@ else
   rm -rf conftest*
   CPP="${CC-cc} -nologo -E"
   cat > conftest.$ac_ext <<EOF
-#line 606 "configure"
+#line 620 "configure"
 #include "confdefs.h"
 #include <assert.h>
 Syntax Error
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:612: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:626: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   :
@@ -634,17 +648,17 @@ echo "$ac_t""$CPP" 1>&6
 
 ac_safe=`echo "pvm3.h" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for pvm3.h""... $ac_c" 1>&6
-echo "configure:638: checking for pvm3.h" >&5
+echo "configure:652: checking for pvm3.h" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 643 "configure"
+#line 657 "configure"
 #include "confdefs.h"
 #include <pvm3.h>
 EOF
 ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
-{ (eval echo configure:648: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+{ (eval echo configure:662: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
 ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
 if test -z "$ac_err"; then
   rm -rf conftest*
@@ -663,7 +677,6 @@ if eval "test \"`echo '$ac_cv_header_'$ac_safe`\" = yes"; then
   PVM_INCLUDE=""
 else
   echo "$ac_t""no" 1>&6
-
     echo "Try to find pvm3.h ..."
     if test -f /usr/local/include/pvm3.h; then
         echo "Found in /usr/local/include"
@@ -672,33 +685,30 @@ else
         echo "Found in ${PVM_ROOT}/include"
         PVM_INCLUDE="-I${PVM_ROOT}/include"
     else 
-        echo "Cannot find pvm header file."; exit 1
-    fi
+        echo "Cannot find pvm header file."
+        exit 1
+    fi 
 
 fi
 
 
-echo $ac_n "checking for pvm_mytid in -lpvm3""... $ac_c" 1>&6
-echo "configure:683: checking for pvm_mytid in -lpvm3" >&5
-ac_lib_var=`echo pvm3'_'pvm_mytid | sed 'y%./+-%__p_%'`
+echo $ac_n "checking for main in -lpvm3""... $ac_c" 1>&6
+echo "configure:697: checking for main in -lpvm3" >&5
+ac_lib_var=`echo pvm3'_'main | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_save_LIBS="$LIBS"
 LIBS="-lpvm3  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 691 "configure"
+#line 705 "configure"
 #include "confdefs.h"
-/* Override any gcc2 internal prototype to avoid an error.  */
-/* We use char because int might match the return type of a gcc2
-    builtin and then its argument prototype would still apply.  */
-char pvm_mytid();
 
 int main() {
-pvm_mytid()
+main()
 ; return 0; }
 EOF
-if { (eval echo configure:702: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:712: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -716,7 +726,6 @@ if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
   PVM_LIBS=""
 else
   echo "$ac_t""no" 1>&6
-
     echo "Try to find libpvm3 ..."
     if test -f /usr/local/lib/libpvm3.a; then
         echo "Found in /usr/local/lib"
@@ -725,8 +734,58 @@ else
         echo "Found in ${PVM_ROOT}/lib/${PVM_ARCH}"
         PVM_LIBS="-L${PVM_ROOT}/lib/${PVM_ARCH}"
     else
-        echo "Cannot find libpvm3"; exit 1
-    fi
+        echo "Cannot find libpvm3"
+        exit 1
+    fi  
+
+fi
+
+
+echo $ac_n "checking for main in -lgpvm3""... $ac_c" 1>&6
+echo "configure:746: checking for main in -lgpvm3" >&5
+ac_lib_var=`echo gpvm3'_'main | sed 'y%./+-%__p_%'`
+if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_save_LIBS="$LIBS"
+LIBS="-lgpvm3  $LIBS"
+cat > conftest.$ac_ext <<EOF
+#line 754 "configure"
+#include "confdefs.h"
+
+int main() {
+main()
+; return 0; }
+EOF
+if { (eval echo configure:761: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=no"
+fi
+rm -f conftest*
+LIBS="$ac_save_LIBS"
+
+fi
+if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  PVM_LIBS=""
+else
+  echo "$ac_t""no" 1>&6
+   echo "Try to find libgpvm3 ..."
+    if test -f /usr/local/lib/libgpvm3.a; then
+        echo "Found in /usr/local/lib"
+        PVM_LIBS="-L/usr/local/lib"
+    elif test -f ${PVM_ROOT}/lib/${PVM_ARCH}/libgpvm3.a; then
+        echo "Found in ${PVM_ROOT}/lib/${PVM_ARCH}"
+        PVM_LIBS="-L${PVM_ROOT}/lib/${PVM_ARCH}"
+    else
+        echo "Cannot find libgpvm3"
+        exit 1
+    fi  
 
 fi
 
@@ -734,7 +793,7 @@ fi
 # Extract the first word of "pvmd", so it can be a program name with args.
 set dummy pvmd; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:738: checking for $ac_word" >&5
+echo "configure:797: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_PVMD'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -756,10 +815,9 @@ else
     fi
   done
   IFS="$ac_save_ifs"
-  test -z "$ac_cv_path_PVMD" && ac_cv_path_PVMD="
-    echo "Cannot find pvmd executable"
+  test -z "$ac_cv_path_PVMD" && ac_cv_path_PVMD="   echo "Cannot find pvmd executable"
     echo "Include it in your path or check your pvm installation."
-    exit 1
+    exit 1  
 "
   ;;
 esac
@@ -775,7 +833,7 @@ fi
 # Extract the first word of "pvmgs", so it can be a program name with args.
 set dummy pvmgs; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:779: checking for $ac_word" >&5
+echo "configure:837: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_PVMGSPATH'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -797,15 +855,14 @@ else
     fi
   done
   IFS="$ac_save_ifs"
-  test -z "$ac_cv_path_PVMGSPATH" && ac_cv_path_PVMGSPATH="
-    if test -f ${PVM_ROOT}/bin/${PVM_ARCH}/pvmgs; then
+  test -z "$ac_cv_path_PVMGSPATH" && ac_cv_path_PVMGSPATH="   if test -f ${PVM_ROOT}/bin/${PVM_ARCH}/pvmgs; then
         PVMGSPATH=${PVM_ROOT}/bin/${PVM_ARCH}
         echo "Found in ${PVM_ROOT}/bin/${PVM_ARCH}"
     else 
         echo "Cannot find pvmgs executable"
         echo "Include it in your path or check your pvm installation."
         exit 1
-    fi
+    fi  
 "
   ;;
 esac
@@ -818,10 +875,174 @@ else
 fi
 
 
-PKG_LIBS="${PVM_LIBS} -lpvm3 -lgpvm3"
-PKG_CPPFLAGS="${PVM_INCLUDE}"
+# Check whether --with-sprng or --without-sprng was given.
+if test "${with_sprng+set}" = set; then
+  withval="$with_sprng"
+     if test "${withval}" = no; then
+        want_sprng=no
+    elif test "${withval}" = yes; then
+        want_sprng=yes
+    else
+        want_sprng=yes
+        SPRNG_ROOT=${withval} 
+    fi  
+else
+     want_sprng=no
+    R_HAVE_SPRNG=FALSE  
+
+fi
+
+
+if test "${want_sprng}" = yes; then
+    echo "Try to find sprng.h ..."
+    if test -f ${SPRNG_ROOT}/include/sprng.h; then
+        echo "Found in ${SPRNG_ROOT}/include"
+        cat >> confdefs.h <<\EOF
+#define HAVE_SPRNG 1
+EOF
+
+        R_HAVE_SPRNG=TRUE
+        SPRNG_INCLUDE="-I${SPRNG_ROOT}/include"
+    else 
+        ac_safe=`echo "sprng.h" | sed 'y%./+-%__p_%'`
+echo $ac_n "checking for sprng.h""... $ac_c" 1>&6
+echo "configure:910: checking for sprng.h" >&5
+if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 915 "configure"
+#include "confdefs.h"
+#include <sprng.h>
+EOF
+ac_try="$ac_cpp conftest.$ac_ext >/dev/null 2>conftest.out"
+{ (eval echo configure:920: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }
+ac_err=`grep -v '^ *+' conftest.out | grep -v "^conftest.${ac_ext}\$"`
+if test -z "$ac_err"; then
+  rm -rf conftest*
+  eval "ac_cv_header_$ac_safe=yes"
+else
+  echo "$ac_err" >&5
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_header_$ac_safe=no"
+fi
+rm -f conftest*
+fi
+if eval "test \"`echo '$ac_cv_header_'$ac_safe`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+     cat >> confdefs.h <<\EOF
+#define HAVE_SPRNG 1
+EOF
+
+            R_HAVE_SPRNG=TRUE
+            SPRNG_INCLUDE=""    
+else
+  echo "$ac_t""no" 1>&6
+   echo "Cannot find sprng 2.0 header file."
+            exit 1  
+        
+fi
+
+    fi
+
+    echo "Try to find libsprng.a ..."
+    if test -f ${SPRNG_ROOT}/lib/libsprng.a; then
+        echo "Found in ${SPRNG_ROOT}/lib"
+        SPRNG_LIBS="-L${SPRNG_ROOT}/lib -lsprng"
+    else
+        echo $ac_n "checking for main in -lsprng""... $ac_c" 1>&6
+echo "configure:957: checking for main in -lsprng" >&5
+ac_lib_var=`echo sprng'_'main | sed 'y%./+-%__p_%'`
+if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_save_LIBS="$LIBS"
+LIBS="-lsprng  $LIBS"
+cat > conftest.$ac_ext <<EOF
+#line 965 "configure"
+#include "confdefs.h"
+
+int main() {
+main()
+; return 0; }
+EOF
+if { (eval echo configure:972: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=no"
+fi
+rm -f conftest*
+LIBS="$ac_save_LIBS"
+
+fi
+if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  SPRNG_LIBS=""
+else
+  echo "$ac_t""no" 1>&6
+   echo "Cannot find libsprng"; 
+            exit 1  
+        
+fi
+
+    fi
+
+    echo $ac_n "checking for main in -lgmp""... $ac_c" 1>&6
+echo "configure:998: checking for main in -lgmp" >&5
+ac_lib_var=`echo gmp'_'main | sed 'y%./+-%__p_%'`
+if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  ac_save_LIBS="$LIBS"
+LIBS="-lgmp  $LIBS"
+cat > conftest.$ac_ext <<EOF
+#line 1006 "configure"
+#include "confdefs.h"
+
+int main() {
+main()
+; return 0; }
+EOF
+if { (eval echo configure:1013: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "ac_cv_lib_$ac_lib_var=no"
+fi
+rm -f conftest*
+LIBS="$ac_save_LIBS"
+
+fi
+if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+     cat >> confdefs.h <<\EOF
+#define HAVE_LIBGMP 1
+EOF
+
+        SPRNG_LIBS="$SPRNG_LIBS -lgmp"  
+else
+  echo "$ac_t""no" 1>&6
+   echo "libgmp not found. exiting..."
+        exit 1  
+    
+fi
+
+fi
+
+PKG_LIBS="${PVM_LIBS} -lpvm3 -lgpvm3 ${SPRNG_LIBS}"
+PKG_CPPFLAGS="${PVM_INCLUDE} ${SPRNG_INCLUDE}"
 PVMGSPATH=`dirname $PVMGSPATH`
-# PVMGSPATH=${PVMGSPATH%/*}
+
+
 
 
 
@@ -941,7 +1162,7 @@ done
 
 ac_given_srcdir=$srcdir
 
-trap 'rm -fr `echo "src/Makevars inst/pvmhosts" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+trap 'rm -fr `echo "src/Makevars inst/pvmhosts R/zzz.R R/sprng.R tests/sprng_test.R" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -980,6 +1201,7 @@ s%@PVM_ROOT@%$PVM_ROOT%g
 s%@PVM_ARCH@%$PVM_ARCH%g
 s%@PKG_LIBS@%$PKG_LIBS%g
 s%@PKG_CPPFLAGS@%$PKG_CPPFLAGS%g
+s%@R_HAVE_SPRNG@%$R_HAVE_SPRNG%g
 
 CEOF
 EOF
@@ -1021,7 +1243,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"src/Makevars inst/pvmhosts"}
+CONFIG_FILES=\${CONFIG_FILES-"src/Makevars inst/pvmhosts R/zzz.R R/sprng.R tests/sprng_test.R"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then

@@ -2,7 +2,7 @@
 ## problems.  Should we do the same, or "directly map"?  (i.e. we
 ## would have to consider "try"...)
 
-## $Id: rpvm.R,v 1.24 2001/09/20 23:09:05 snake Exp $
+## $Id: rpvm.R,v 1.28 2002/01/30 21:53:16 snake Exp $
 
 .PVM.encoding <- 0:2
 names (.PVM.encoding) <- c("Default",
@@ -33,8 +33,10 @@ names (.PVM.encoding) <- c("Default",
                          ntask = 1,
                          flag =  "Default",
                          where = "",
-                         slavedir = NULL,
-                         outdir = NULL) {
+                         slavedir = getwd (),
+                         outdir = getwd ()) {
+    cat ("\n")
+    cat ("Try to spawn tasks...\n")
     .PVM.spawn (ntask = ntask,
                 flag = flag,
                 where = where,
@@ -45,10 +47,10 @@ names (.PVM.encoding) <- c("Default",
                         ntask = 1,
                         flag  = "Default",
                         where = "",
-                        arglist = "") {
+                        arglist = "") {    
     .PVM.spawnflags <- c (0, 2^(0:5))
     names (.PVM.spawnflags) <- c("Default", "Host", "Arch",
-                                 "Debug", "Trace", "MppFront", "Compl")
+                                 "Debug", "Trace", "MppFront", "Compl")   
     tids <- .Call ("rpvm_spawn",
                    as.character (task),
                    as.integer   (ntask),
@@ -293,7 +295,7 @@ PVM.options <- function (what, val) {
 
 ### Packing data
 .PVM.pkdouble <- function (data = 0.0, stride = 1) {
-    info <- .Call ("rpvm_pkdouble", as.double(data), as.integer (stride))
+    info <- .Call ("rpvm_pkdouble", as.double (data), as.integer (stride))
     return (invisible (info))
 }
 

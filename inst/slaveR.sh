@@ -18,6 +18,8 @@
 ## 2. defined as environmental variables on each host
 ## 3. otherwise, this script provides default position.
 
+echo $1 $2 $3
+
 if [ $# -lt 1 ]; then
     echo "There has to be at least one argument!"
     exit 1
@@ -30,12 +32,12 @@ outfile=$base.$$.Rout
 
 ## Full path to input file
 if [ -n "$2" ]; then    
-    RSLAVEDIR=$2                         # Specified as the third arguments
+    RSLAVEDIR=$2                         # Specified as the second argument
 fi
 
 ## Full path to output file
 if [ -n "$3" ]; then   
-    RSLAVEOUT=$3                         # Specified as the third arguments
+    RSLAVEOUT=$3                         # Specified as the third argument
 fi
 
 JOB=${RSLAVEDIR:=$R_LIBS/rpvm}/$infile
@@ -52,6 +54,9 @@ if [ ! -d $RSLAVEOUT -o ! -w $RSLAVEOUT ]; then
     echo "$RSLAVEOUT is not a diretory or is not writable!"
     exit 1
 fi
+
+echo $JOB
+echo $OUT
 
 ### It is assumed that R is in the search path
 R BATCH $JOB $OUT

@@ -21,7 +21,8 @@
   \item{msgtag}{an integer message tag supplied by the user.}
   \item{group}{a character string naming the group}
   \item{rootginst}{an integer instance number of group member who
-  performs the gather of its array to the members of the group.}
+    performs the gather of its array to the members of the group.}
+  \item{...}{arguments passed to the corresponding methods}
 }
 \value{
   On the root, a vector combining all the \code{x}'s.

@@ -25,7 +25,8 @@
   \item{msgtag}{an integer message tag supplied by the user.}
   \item{group}{a character string naming the group}
   \item{rootginst}{an integer instance number of group member who
-  performs the scatter of its array to the members of the group.}
+    performs the scatter of its array to the members of the group.}
+  \item{...}{arguments passed to the corresponding methods}
 }
 \value{
   a vector of length \code{count}

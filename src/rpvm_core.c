@@ -1,32 +1,9 @@
 /*
- * $Id: rpvm_core.c,v 1.15 2001/09/20 23:09:40 snake Exp $
+ * $Id: rpvm_core.c,v 1.18 2002/01/30 21:53:16 snake Exp $
  */
 
-#include <R.h>
-#include <Rdefines.h>
-
-#include <pvm3.h>
-
-/**
- * Make an SEXP out of an integer scalar
- */
-SEXP mkInt (int a)
-{
-    SEXP sexp_ans;
-    PROTECT (sexp_ans = allocVector (INTSXP, 1));
-    INTEGER (sexp_ans)[0] = a;
-    UNPROTECT (1);
-    return sexp_ans;
-}
-
-SEXP mkReal (double x)
-{
-    SEXP sexp_ans;
-    PROTECT (sexp_ans = allocVector (REALSXP, 1));
-    REAL (sexp_ans)[0] = x;
-    UNPROTECT (1);
-    return sexp_ans;
-}
+#include "utils.h"
+#include "pvm3.h"
 
 int rpvm_chkerror (int error_code, int exit_pvm)
 {
@@ -132,24 +109,6 @@ int rpvm_chkerror (int error_code, int exit_pvm)
         /* Not an error, return intact */
         return error_code;
     }
-}
-
-/**
- * Convert an SEXP string vector to a (char **).
- */
-char **toPPChar (SEXP sexp_str)
-{
-    /* Note: it is the user's responsiblity to ensure sexp_str is
-     * indeed a vector of strings */
-    char **ppchar;
-    int  i;
-    int  len = LENGTH (sexp_str);
-    /* Temporary memory will be released after exiting .Call */
-    ppchar = (char **) R_alloc (len, sizeof (char *));
-    for (i = 0; i < len; ++i) {
-        ppchar[i] = CHAR (STRING_ELT (sexp_str, i));
-    }
-    return ppchar;
 }
 
 /* Process control */
@@ -280,7 +239,6 @@ SEXP rpvm_spawn (SEXP sexp_task,
     SEXP sexp_tids;
 
     PROTECT (sexp_tids  = allocVector (INTSXP, ntask));
-
     /* spawn tasks */
     numt = pvm_spawn (CHAR (STRING_ELT (sexp_task, 0)),
                       arglist,
@@ -736,9 +694,8 @@ SEXP rpvm_config ()
     if (info == PvmSysErr) {
         return mkInt (NA_INTEGER);
     }
-
     rpvm_chkerror (info, 0);
-    Rprintf ("There are %d hosts and %d architectures.\n", nhost, narch);
+    /* Rprintf ("There are %d hosts and %d architectures.\n", nhost, narch); */
 
     PROTECT (sexp_tid   = allocVector (INTSXP, nhost));
     PROTECT (sexp_name  = allocVector (STRSXP, nhost));

@@ -9,6 +9,7 @@ library (rpvm)
 gname <- "group_rsg"
                                         # start VM if necessary
 if (is.na (.PVM.config ())) {
+    cat ("pvmd is not running. Try to start pvmd...\n")    
     .PVM.start.pvmd (file.path (.lib.loc[1], "rpvm", "pvmhosts"))
 }
                                         # Join the group

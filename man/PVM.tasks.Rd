@@ -24,7 +24,7 @@
     \item{parent}{parent task id}
     \item{host}{host id}
     \item{status}{task running status (see \code{\link{.PVM.pstats}}).}
-    \item{name}{string, name of the host}
+    \item{name}{string, name of the spawned task}
   }
 }
 \details{

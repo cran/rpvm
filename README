@@ -26,7 +26,8 @@ MA 02139, USA.
 DEPENDENCE
 =============================================================================
 
-rpvm depends on R version 1.2.0 or higher and PVM 3.4.2.
+rpvm depends on R version 1.2.0 or higher and PVM 3.4.2.  Optionally SPRNG
+2.0.
     
 =============================================================================
 INSTALLATION:
@@ -42,7 +43,20 @@ INSTALLATION:
     You need install pvm for each host you want to include in the virtual
     machine.
 
-2.  Install rpvm by usual process:
+2.  (Optional) Install SPRNG 2.0 (http:/sprng.cs.fsu.edu).  Note that the
+    generator pmlcg requires libgmp but it provides an outdated version of
+    gmp.h.  Find the following line in sprng2.0/SRC/pmlcg/pmlcg.c:
+
+    #include "gmp.h"
+
+    and change it to
+
+    #include <gmp.h>
+
+    to use the system header file.  It won't compile otherwise. 
+
+
+3.  Install rpvm without sprng support:
 
     R INSTALL rpvm_version.tgz.
 
@@ -51,7 +65,19 @@ INSTALLATION:
     If PVM_ROOT is not set, the configure script will try to look for
     first /usr/lib/pvm3/ then $HOME/pvm3/ and stop if none exists.
 
-4.  Optional.
+4.  Install rpvm with sprng support:
+
+    R INSTALL rpvm_version.tgz --configure-args=--with-sprng=/path/to/sprng
+
+    The header files of SPRNG are ssumed to be in /path/to/sprng/include and
+    the library .a files are in /path/to/sprng/lib.  If you installed them in
+    standard place like /usr/include and /usr/lib, then you can just say,
+
+    R INSTALL rpvm_version.tgz --configure-args=--with-sprng=yes
+    
+    By default, --with-sprng=no, SPRNG wrapper is not installed.
+
+5.  Optional.
 
     Set environment variables RSLAVEDIR (where to find R slave script, default
     $R_LIBS/rpvm) and RSLAVEOUT (where to put output from R slave process, 
@@ -73,4 +99,6 @@ Caveat: To be able to run the test successfully, the local host shouldn't be
 part of a already running VM (since rpvm may not be installed on other hosts).
 After the test, pvmd is left running on the local host (attempts to shut down
 the VM with .PVM.halt() in the test R script will abruptly shutdown R itself
-and resulted in error exit).
+and resulted in error exit).  Also because it is impossible to pass any
+configure arguments to R CMD check, sprng wrapper is not built and the test
+script isn't run during the test.

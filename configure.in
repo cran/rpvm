@@ -2,9 +2,14 @@
 
 AC_INIT(DESCRIPTION)
 
+echo -n "Check if PVM_ROOT is defined... "
 if test -z "${PVM_ROOT}"; then
+    echo "no"
     echo "Warning: PVM_ROOT not defined."
-    echo "Try to guess where pvm is installed..."
+    echo "I'll try to build rpvm but you need set PVM_ROOT"
+    echo "before use pvm. See pvm_intro(1PVM)"
+    echo ""
+    echo "Try to guess if pvm is installed somewhere ..."
     if test -d /usr/lib/pvm3; then                      # Debian
         PVM_ROOT=/usr/lib/pvm3
     elif test -d /usr/share/pvm3; then                  # Red Hat
@@ -12,16 +17,23 @@ if test -z "${PVM_ROOT}"; then
     elif test -d ${HOME}/pvm3; then                     # User installed
         PVM_ROOT=${HOME}/pvm3
     fi
-    if test -n "${PVM_ROOT}"; then
+else
+    echo "${PVM_ROOT}"
+fi
+
+if test -n "${PVM_ROOT}"; then
+    if test -d "${PVM_ROOT}/conf"; then 
         echo "Found pvm: ${PVM_ROOT} "
-        echo "Warning: You need set PVM_ROOT to ${PVM_ROOT} before use pvm."
-        echo "See pvm_intro(1PVM)"
     else
-        echo "Cannot find pvm."
-        echo "If pvm is installed, set PVM_ROOT to where pvm is."
-        echo "Otherwise, please install pvm first."
+        echo "Invalid PVM_ROOT.  Cannot find ${PVM_ROOT}/conf"
         exit 1
     fi
+else
+    echo " Cannot find pvm."
+    echo " If pvm is installed, set PVM_ROOT to where pvm is or specify"
+    echo " its location in --with-pvm."
+    echo " Otherwise, please install pvm first."
+    exit 1
 fi
 
 echo "PVM_ROOT is ${PVM_ROOT}"
@@ -32,8 +44,8 @@ fi
 
 echo "PVM_ARCH is ${PVM_ARCH}"
 
-AC_CHECK_HEADER(pvm3.h,PVM_INCLUDE="",[
-    echo "Try to find pvm3.h ..."
+AC_CHECK_HEADER(pvm3.h,PVM_INCLUDE="",
+[    echo "Try to find pvm3.h ..."
     if test -f /usr/local/include/pvm3.h; then
         echo "Found in /usr/local/include"
         PVM_INCLUDE="-I/usr/local/include"
@@ -41,12 +53,13 @@ AC_CHECK_HEADER(pvm3.h,PVM_INCLUDE="",[
         echo "Found in ${PVM_ROOT}/include"
         PVM_INCLUDE="-I${PVM_ROOT}/include"
     else 
-        echo "Cannot find pvm header file."; exit 1
-    fi
-])
+        echo "Cannot find pvm header file."
+        exit 1
+    fi ]
+)
 
-AC_CHECK_LIB(pvm3,pvm_mytid,PVM_LIBS="",[
-    echo "Try to find libpvm3 ..."
+AC_CHECK_LIB(pvm3,main,PVM_LIBS="",
+[    echo "Try to find libpvm3 ..."
     if test -f /usr/local/lib/libpvm3.a; then
         echo "Found in /usr/local/lib"
         PVM_LIBS="-L/usr/local/lib"
@@ -54,36 +67,102 @@ AC_CHECK_LIB(pvm3,pvm_mytid,PVM_LIBS="",[
         echo "Found in ${PVM_ROOT}/lib/${PVM_ARCH}"
         PVM_LIBS="-L${PVM_ROOT}/lib/${PVM_ARCH}"
     else
-        echo "Cannot find libpvm3"; exit 1
-    fi
-])
+        echo "Cannot find libpvm3"
+        exit 1
+    fi  ]
+)
 
-AC_PATH_PROG(PVMD,pvmd,[
-    echo "Cannot find pvmd executable"
+AC_CHECK_LIB(gpvm3,main,PVM_LIBS="",
+[   echo "Try to find libgpvm3 ..."
+    if test -f /usr/local/lib/libgpvm3.a; then
+        echo "Found in /usr/local/lib"
+        PVM_LIBS="-L/usr/local/lib"
+    elif test -f ${PVM_ROOT}/lib/${PVM_ARCH}/libgpvm3.a; then
+        echo "Found in ${PVM_ROOT}/lib/${PVM_ARCH}"
+        PVM_LIBS="-L${PVM_ROOT}/lib/${PVM_ARCH}"
+    else
+        echo "Cannot find libgpvm3"
+        exit 1
+    fi  ]
+)
+
+AC_PATH_PROG(PVMD,pvmd,
+[   echo "Cannot find pvmd executable"
     echo "Include it in your path or check your pvm installation."
-    exit 1
-])
+    exit 1  ]
+)
 
-AC_PATH_PROG(PVMGSPATH,pvmgs,[
-    if test -f ${PVM_ROOT}/bin/${PVM_ARCH}/pvmgs; then
+AC_PATH_PROG(PVMGSPATH,pvmgs,
+[   if test -f ${PVM_ROOT}/bin/${PVM_ARCH}/pvmgs; then
         PVMGSPATH=${PVM_ROOT}/bin/${PVM_ARCH}
         echo "Found in ${PVM_ROOT}/bin/${PVM_ARCH}"
     else 
         echo "Cannot find pvmgs executable"
         echo "Include it in your path or check your pvm installation."
         exit 1
-    fi
-])
+    fi  ]
+)
 
-PKG_LIBS="${PVM_LIBS} -lpvm3 -lgpvm3"
-PKG_CPPFLAGS="${PVM_INCLUDE}"
+AC_ARG_WITH(sprng,
+[   --with-sprng=/path/to/sprng          Location of SPRNG library.],
+[   if test "${withval}" = no; then
+        want_sprng=no
+    elif test "${withval}" = yes; then
+        want_sprng=yes
+    else
+        want_sprng=yes
+        SPRNG_ROOT=${withval} 
+    fi  ],
+[   want_sprng=no
+    R_HAVE_SPRNG=FALSE  ]
+)
+
+if test "${want_sprng}" = yes; then
+    echo "Try to find sprng.h ..."
+    if test -f ${SPRNG_ROOT}/include/sprng.h; then
+        echo "Found in ${SPRNG_ROOT}/include"
+        AC_DEFINE(HAVE_SPRNG)
+        R_HAVE_SPRNG=TRUE
+        SPRNG_INCLUDE="-I${SPRNG_ROOT}/include"
+    else 
+        AC_CHECK_HEADER(sprng.h, 
+        [   AC_DEFINE(HAVE_SPRNG)
+            R_HAVE_SPRNG=TRUE
+            SPRNG_INCLUDE=""    ],
+        [   echo "Cannot find sprng 2.0 header file."
+            exit 1  ]
+        )
+    fi
+
+    echo "Try to find libsprng.a ..."
+    if test -f ${SPRNG_ROOT}/lib/libsprng.a; then
+        echo "Found in ${SPRNG_ROOT}/lib"
+        SPRNG_LIBS="-L${SPRNG_ROOT}/lib -lsprng"
+    else
+        AC_CHECK_LIB(sprng,main,SPRNG_LIBS="",
+        [   echo "Cannot find libsprng"; 
+            exit 1  ]
+        )
+    fi
+
+    AC_CHECK_LIB(gmp,main,
+    [   AC_DEFINE(HAVE_LIBGMP)
+        SPRNG_LIBS="$SPRNG_LIBS -lgmp"  ],
+    [   echo "libgmp not found. exiting..."
+        exit 1  ]
+    )
+fi
+
+PKG_LIBS="${PVM_LIBS} -lpvm3 -lgpvm3 ${SPRNG_LIBS}"
+PKG_CPPFLAGS="${PVM_INCLUDE} ${SPRNG_INCLUDE}"
 PVMGSPATH=`dirname $PVMGSPATH`
-# PVMGSPATH=${PVMGSPATH%/*}
 
 AC_SUBST(PVM_ROOT)
 AC_SUBST(PVM_ARCH)
 AC_SUBST(PKG_LIBS)
 AC_SUBST(PKG_CPPFLAGS)
 AC_SUBST(PVMGSPATH)
+AC_SUBST(DEFS)
+AC_SUBST(R_HAVE_SPRNG)
 
-AC_OUTPUT(src/Makevars inst/pvmhosts)
+AC_OUTPUT(src/Makevars inst/pvmhosts R/zzz.R R/sprng.R tests/sprng_test.R)

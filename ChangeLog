@@ -1,3 +1,13 @@
+2002-01-30:  Na (Michael) Li <lina@u.washington.edu>
+
+    * 0.4 failed check on Debian.  Seem to be fixed in 0.4.1.
+
+2002-01-15:  Na (Michael) Li <lina@u.washington.edu>
+
+    * Version 0.4 released.
+
+    * Wrapped in parallel random number generator library SPRNG.
+
 2001-09-20: Na (Michael) Li <lina@u.washington.edu>
 
     * Version 0.3 released.

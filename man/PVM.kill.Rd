@@ -8,7 +8,7 @@
 .PVM.kill(tids)
 }
 \arguments{
-  \item{tid}{task ids of the PVM processes to be killded.}
+  \item{tids}{task ids of the PVM processes to be killded.}
 }
 \value{
   Return number of processes successfully killed.

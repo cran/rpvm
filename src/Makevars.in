@@ -3,6 +3,6 @@
 include @PVM_ROOT@/conf/@PVM_ARCH@.def
 
 # PVM library and header files
-PKG_CPPFLAGS = @PKG_CPPFLAGS@ 
+PKG_CPPFLAGS = @DEFS@ @PKG_CPPFLAGS@ -I$(PVM_ROOT)/include
 PKK_CFLAGS   = $(ARCHCFLAGS)
 PKG_LIBS     = @PKG_LIBS@ $(ARCHLIB)
