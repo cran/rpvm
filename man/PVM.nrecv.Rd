@@ -13,8 +13,7 @@
   matches any message tag)}
 }
 \value{
-  Returns the id of the new active receive buffer. Values less than zero
-  indicate an error.
+  Returns the id of the new active receive buffer. -1 indicates an error.
 }
 \details{
   \code{.PVM.nrecv} checks to see whether a message with lable
@@ -47,8 +46,8 @@
   \code{\link{.PVM.bufinfo}}, \code{\link{PVM.unpack}}
 }
 \examples{
-myparent <- .PVM.parent ()
-while (1) {
+\dontrun{myparent <- .PVM.parent ()}
+\dontrun{while (1) {
     bufid <- .PVM.nrecv (myparent, 4)
     if (bufid > 0) {
         data <- .PVM.upkintvec ()
@@ -57,7 +56,7 @@ while (1) {
     } else {
         # do something else
     }
-}
+}}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

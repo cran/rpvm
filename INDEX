@@ -1,9 +1,17 @@
+PVM.barrier              Group synchronization
+PVM.bcast                Broadcasting the data
 PVM.buffers              Manipulating Message Buffers
 .PVM.bufinfo             Message buffer infomation
 .PVM.config              PVMD configuration
-.PVM.errors              PVM Error Codes
 .PVM.exit                Unregister process from local PVM deamon.
 .PVM.freebuf             Free message buffer
+PVM.gather               Gather the data into root
+PVM.getinst              Instance number identified by group name and
+                         task id
+PVM.gettid               Task id identified by group name and instance
+                         number
+PVM.group                Join or leave a names group
+PVM.gsize                Get the size of the group
 .PVM.initsend            Initialize send buffer
 .PVM.kill                Kill pvm process
 .PVM.mcast               Multicast data
@@ -19,6 +27,8 @@ PVM.pack                 Packing data
 .PVM.pstats              Status of PVM processes
 PVM.rapply               Parallel apply
 .PVM.recv                Blocking receive
+PVM.reduce               Reduction
+PVM.scatter              Scatter a vector across the group
 .PVM.send                Send data
 .PVM.spawn               Spawn child tasks
 .PVM.tasks               Tasks information

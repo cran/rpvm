@@ -11,7 +11,7 @@
   \item{tid}{integer task id specified.}
 }
 \value{
-  Positive integer represents the host id.
+  Positive integer represents the host id. -1 if failed.
 }
 \details{
 }
@@ -20,7 +20,7 @@
 }
 \examples{
 ## Find out which host this process in running on
-myhost <- .PVM.tidtohost (.PVM.mytid())
+\dontrun{myhost <- .PVM.tidtohost (.PVM.mytid())}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

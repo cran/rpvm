@@ -15,8 +15,7 @@
   \item{usec}{time to wait in microseconds}
 }
 \value{
-  Returns the id of the new active receive buffer. Values less than zero
-  indicate an error.
+  Returns the id of the new active receive buffer. -1 indicates an error.
 }
 \details{
   \code{.PVM.trecv} blocks the process until a message with label
@@ -43,9 +42,9 @@
   \code{\link{.PVM.nrecv}}, \code{\link{.PVM.recv}}
 }
 \examples{
-myparent <- .PVM.parent ()
-bufid <- .PVM.trecv (myparent, 4, 2)
-if (bufid > 0) data <- .PVM.upkintvec ()
+\dontrun{myparent <- .PVM.parent ()}
+\dontrun{bufid <- .PVM.trecv (myparent, 4, 2)}
+\dontrun{if (bufid > 0) data <- .PVM.upkintvec ()}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

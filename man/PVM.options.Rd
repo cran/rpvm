@@ -151,7 +151,7 @@ PVM.options (what, val)
   PVM documentation
 }
 \examples{
-PVM.options (what = "DebugMask")
+\dontrun{PVM.options (what = "DebugMask")}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

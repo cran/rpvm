@@ -1,4 +1,5 @@
 \name{PVM.unpack}
+\alias{PVM.unpack}
 \alias{.PVM.upkdouble}
 \alias{.PVM.upkint}
 \alias{.PVM.upkstr}
@@ -16,7 +17,7 @@
 \usage{
 .PVM.upkdouble (nitem = 1, stride = 1)
 .PVM.upkint (nitem = 1, stride = 1)
-.PVM.upkstr (maxlen)
+.PVM.upkstr (maxlen = 200)
 
 .PVM.upkintvec ()
 .PVM.upkdblvec ()
@@ -44,13 +45,12 @@
   \code{.PVM.upkint} are lower-level correspondents of the PVM library
   and require the number of items to unpack as an argument.
 
-  When \code{.PVM.upkstr} is given an argument \code{maxlen}, it is used
-  as the maximum length of the string passed.  It is necessary to unpack
-  a message buffer sent by C \code{pvm_pkstr} directly, by calling a C
-  program as slave, for example.  For buffer sent through R wrapper
-  function \code{\link{.PVM.pkstr}} (from another R process), this
-  argument is unnessary since the length information is sent as part of
-  the message.
+  \code{.PVM.upkstr} is used to unpack a string send by C functions or
+  \code{\link{.PVM.pkstr}}.  It requires an argument \code{maxlen} that
+  should be larger than the length of the string passed.  For packing
+  and unpacking strings between R processes, \code{\link{.PVM.pkstrvec}}
+  and \code{.PVM.upkstrvec} can be used (in the case, the maximum length
+  is part of the message).
 }
 \references{
   PVM documentation
@@ -60,7 +60,7 @@
 }
 \examples{
 ## Unpack a matrix
-a <- .PVM.upkdblmat ()
+\dontrun{a <- .PVM.upkdblmat ()}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

@@ -1,3 +1,14 @@
+2001-09-20: Na (Michael) Li <lina@u.washington.edu>
+
+    * Version 0.3 released.
+
+    * Group functions implemented with a test script.
+
+    * Now the test scripts (pvm_test.R, group_test.R) should run at R CMD
+      check with only minimal requirement that pvm is installed properly 
+      (no need to specify path, etc.).
+
+    * It is no longer needed to move the slaveR.sh script anywhere.
 
 2001-09-03: Na (Michael) Li <lina@u.washington.edu> 
 

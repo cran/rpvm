@@ -31,8 +31,8 @@
   \code{\link{.PVM.recv}}
 }
 \examples{
-bufid <- .PVM.recv (-1, -1)
-info <- .PVM.bufinfo (bufid)
+\dontrun{bufid <- .PVM.recv (-1, -1)}
+\dontrun{info <- .PVM.bufinfo (bufid)}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

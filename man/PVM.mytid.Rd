@@ -11,8 +11,8 @@
   None.
 }
 \value{
-  Returns integer task id of the calling process.  Value less than zero
-  indicate an error.
+  Returns integer task id of the calling process.  Return -1 if an error
+  occured.
 }
 \details{
   \code{.PVM.mytid} returns the \code{tid} of the calling process and
@@ -33,7 +33,7 @@
 }
 \examples{
 ## For name(tid) of process and to register with PVM
-mytid <- .PVM.mytid()
+\dontrun{mytid <- .PVM.mytid()}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

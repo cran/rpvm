@@ -5,15 +5,15 @@
    Check the status of hosts computers in the virtual machine.
 }
 \usage{
-.PVM.pstats (hosts)
+.PVM.mstats (hosts)
 }
 \arguments{
   \item{hosts}{vector of host names (strings)}
 }
 \value{
-  Return machine status. \code{"HostOK"} if host is running,
-  \code{"NoHost"} if host is not in virtual machine, \code{"HostFail"}
-  is host is unreachable (and possibly failed).
+  Return machine status. \code{"OK"} if host is running, \code{"Not in
+  VM"} if host is not in virtual machine, \code{"Not reachable"} is host
+  is unreachable (and possibly failed).
 }
 \details{
   \code{.PVM.mstats} returns the status the computers named by
@@ -29,7 +29,7 @@
   \code{\link{.PVM.notify}}
 }
 \examples{
-.PVM.mstats ("msr.ornl.gov")
+\dontrun{.PVM.mstats ("abacus")}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

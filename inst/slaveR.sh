@@ -23,7 +23,8 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
-base=`basename $1 .R`
+# base=${1%.R}
+base=`basename $1`
 infile=$base.R
 outfile=$base.$$.Rout
 

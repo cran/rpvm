@@ -15,7 +15,7 @@
   \code{"Raw"} or \code{"InPlace"}.}
 }
 \value{
-  Returns message buffer id. Values less than zero indicate an error.
+  Returns message buffer id. -1 if there was an error.
 }
 \details{
   This function clears the send buffer and prepares it for packing a new
@@ -45,9 +45,9 @@
 }
 \examples{
 a <- 1:10
-bufid <- .PVM.initsend ("InPlace")
-.PVM.pkintvec (a)
-.PVM.send (tid, msgtag)
+\dontrun{bufid <- .PVM.initsend ("InPlace")}
+\dontrun{.PVM.pkintvec (a)}
+\dontrun{.PVM.send (tid, msgtag)}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

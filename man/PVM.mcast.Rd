@@ -12,7 +12,7 @@
   \item{msgtag}{integer message tag supplied by the user, must be >=0}
 }
 \value{
-  Return a status code.  Values less than zero indicates an error.
+  Return 0 if successful, -1 if failed.
 }
 \details{
   \code{.PVM.mcast} multicasts a message stored in the active send
@@ -38,9 +38,9 @@
   \code{\link{.PVM.send}}
 }
 \examples{
-info <- .PVM.initsend ("Raw")
-info <- .PVM.pkintvec (1:10)
-info <- .PVM.mcast (tids, msgtag = 5)
+\dontrun{.PVM.initsend ("Raw")}
+\dontrun{.PVM.pkintvec (1:10)}
+\dontrun{.PVM.mcast (tids, msgtag = 5)}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

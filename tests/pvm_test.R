@@ -6,7 +6,7 @@ library (rpvm)
 
 ## Define functions
 
-## Some arbitary positive integer as message tag
+# Some arbitary positive integer as message tag
 
 jointag <- 22
 
@@ -14,11 +14,11 @@ jointag <- 22
 master.f <- function (numChild = 1) {
     ## Spawn children
     cat ("## Spawning ", numChild, "children \n")
-    children <- .PVM.spawnR (slave = "pvm_test",
-                             slavedir = paste (Sys.getenv ("R_LIBS"),
-                             "/rpvm/demo/", sep = ""),
-                             outdir = getwd (),
-                             ntask = numChild)
+    curdir <- getwd ()
+    shscript <- file.path (.lib.loc[1], "rpvm", "slaveR.sh")
+    children <- .PVM.spawn (task = shscript,
+                            ntask = numChild,
+                            arglist = c("pvm_test", curdir, curdir))
     if (all (children < 0)) {
         .PVM.exit ()
         stop ("Failed to spawn any task: \n")
@@ -70,25 +70,29 @@ slave.f <- function (myparent) {
     ff <- factor(substring("statistics", 1:10, 1:10))
     print (ff)
     ## initialize buffer for sending
-    info <- .PVM.initsend()    
+    .PVM.initsend()    
     ## Pack and send back
-    info <- .PVM.pkstrvec (c ("Hello", "World!", "from", Sys.getenv ("HOST")))
-    info <- .PVM.pkintvec (data1)
-    info <- .PVM.pkdblvec (data2)
-    info <- .PVM.pkdblmat (data3)
-    info <- .PVM.pkfactor (ff)
+    .PVM.pkstrvec (c ("Hello", "World!", "from", Sys.getenv ("HOST")))
+    .PVM.pkintvec (data1)
+    .PVM.pkdblvec (data2)
+    .PVM.pkdblmat (data3)
+    .PVM.pkfactor (ff)
     
     myparent <- .PVM.parent ()
-    info <- .PVM.send (myparent, jointag)
+    .PVM.send (myparent, jointag)
     
     .PVM.exit()
 }
 
 ## Actuall codes
 
+if (is.na (.PVM.config ())) {
+    .PVM.start.pvmd (file.path (.lib.loc[1], "rpvm", "pvmhosts"))
+}
+
 ## Register the master into PVM
 myparent <- .PVM.parent ()
-if (myparent == .PVM.errors["NoParent"]) {
+if (myparent == 0) {
     conf <- .PVM.config ()
     print (conf)
     ## This is master
@@ -98,4 +102,3 @@ if (myparent == .PVM.errors["NoParent"]) {
     slave.f ()
 }
 
-q (save = "no")

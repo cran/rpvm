@@ -19,7 +19,7 @@
 \value{
   The \emph{get} functions return the id of active send/receive buffer.
   The \emph{set} functions return the id the old send/receive buffer
-  (negative values indicate an error).
+  (-1 indicate an error).
 }
 \details{
   The function \code{.PVM.getsbuf} returns the id of the active send
@@ -47,7 +47,7 @@
   \code{\link{.PVM.mkbuf}}, \code{\link{.PVM.freebuf}}
 }
 \examples{
-sbufid <- .PVM.getsbuf ()
+\dontrun{sbufid <- .PVM.getsbuf ()}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

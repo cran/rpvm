@@ -8,12 +8,12 @@
 .PVM.mkbuf (encode = c("Default", "Raw", "InPlace"))
 }
 \arguments{
-  \item{encoding}{a character string specifying the next message's
-  encoding scheme.  Must be one of \code{"Default"} (default),
-  \code{"Raw"} or \code{"InPlace"}.}
+  \item{encode}{a character string specifying the next message's
+    encoding scheme.  Must be one of \code{"Default"} (default),
+    \code{"Raw"} or \code{"InPlace"}.}
 }
 \value{
-  Returns message buffer id. Values less than zero indicate an error.
+  Returns message buffer id or -1 if failed..
 }
 \details{
   This function creates a new message buffer and sets its encoding theme
@@ -40,9 +40,9 @@
   \code{\link{.PVM.setrbuf}}
 }
 \examples{
-bufid <- .PVM.mkbuf ("Raw")
+\dontrun{bufid <- .PVM.mkbuf ("Raw")}
 ## Send the message ...
-.PVM.freebuf (bufid)
+\dontrun{.PVM.freebuf (bufid)}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

@@ -1,0 +1,4 @@
+There are two R scripts in this directory:
+
+1. pvm_test.R : basic check of the rpvm function.
+2. group_test.R : test group functions.

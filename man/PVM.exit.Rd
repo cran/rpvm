@@ -11,7 +11,7 @@
   None.
 }
 \value{
-  Return 0 when successfully unregistered.
+  Return 0 when successfully unregistered, -1 when failed.
 }
 \details{
   The function \code{.PVM.exit} tells local pvmd that this process is
@@ -30,7 +30,7 @@
 }
 \examples{
 ## Finished with PVM
-.PVM.exit()
+\dontrun{.PVM.exit()}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

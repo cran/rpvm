@@ -19,8 +19,7 @@
     id or task id.}
 }
 \value{
-  Status code returned by the routine.  Values less than zero indicate
-  an error.
+  Status code returned by the routine.  -1 if there was an error.
 }
 \details{
   The routine \code{.PVM.notify} requests PVM to notify the caller on
@@ -55,7 +54,7 @@
   \link{PVMD}
 }
 \examples{
-.PVM.notify (msgtag = 999, what = "Exit", tids)
+\dontrun{.PVM.notify (msgtag = 999, what = "Exit", tids)}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

@@ -1,4 +1,5 @@
 \name{PVMD}
+\alias{PVMD}
 \alias{.PVM.start.pvmd}
 \alias{.PVM.addhosts}
 \alias{.PVM.delhosts}
@@ -18,15 +19,14 @@
   \item{block}{logical, if true, block until startup of all hosts complete}
 }
 \value{
-  \code{.PVM.start.pvmd} and \code{.PVM.halt} returns 0 for
-  success. Values less than zero indicate an error.
+  \code{.PVM.start.pvmd} and \code{.PVM.halt} returns 0 if
+  successful or -1 if failed.
 
   \code{.PVM.addhosts} returns a vector of host ids that has been
   successfully added to the virtual machine.
   
   \code{.PVM.delhosts} returns a vector of status codes for each
-  hosts. Values less than zero indicate an error.
-
+  hosts successfulled removed from the virtual machine.
 }
 \details{
   \code{.PVM.start.pvmd} starts a \emph{pvmd3} process, the master of a
@@ -72,16 +72,16 @@
 }
 \examples{
 # start a new virtual machine on local machine 
-.PVM.start.pvmd ()
+\dontrun{.PVM.start.pvmd ()}
 # add more hosts to it
-.PVM.addhosts ("sparky",
-               "thud.cs.utk.edu  ep=$R_LIBS/rpvm/:$PVM_ROOT/bin/$PVM_ARCH")
+\dontrun{.PVM.addhosts ("sparky",
+               "thud.cs.utk.edu  ep=$R_LIBS/rpvm/:$PVM_ROOT/bin/$PVM_ARCH")}
 # do some work ...
 # finished with one machine
-.PVM.delhosts ("thud.cs.utk.edu")
+\dontrun{.PVM.delhosts ("thud.cs.utk.edu")}
 # do some other work ...
 # finished with pvm
-.PVM.halt ()
+\dontrun{.PVM.halt ()}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

@@ -12,8 +12,7 @@
   \item{msgtag}{integer message tag (>=0) supplied by the user}
 }
 \value{
-  Returns status code. 0 if sucessful. Values less than zero indicate an
-  error.
+  Returns 0 if sucessful, -1 if failed..
 }
 \details{
   Sends a message stored in the active buffer to the PVM process
@@ -39,9 +38,9 @@
 }
 \examples{
 a <- 1:10
-bufid <- .PVM.initsend ()
-.PVM.pkintvec (a)
-.PVM.send (tid, msgtag)
+\dontrun{bufid <- .PVM.initsend ()}
+\dontrun{.PVM.pkintvec (a)}
+\dontrun{.PVM.send (tid, msgtag)}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

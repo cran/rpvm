@@ -13,8 +13,7 @@
   matches any message tag)}
 }
 \value{
-  Returns the id of the new active receive buffer. Values less than zero
-  indicate an error.
+  Returns the id of the new active receive buffer. -1 indicates an error.
 }
 \details{
   \code{.PVM.recv} blocks the process until a message with lable
@@ -44,9 +43,9 @@
   \code{\link{.PVM.bufinfo}}
 }
 \examples{
-myparent <- .PVM.parent ()
-bufid <- .PVM.recv (myparent, 4)
-data <- .PVM.upkintvec ()
+\dontrun{myparent <- .PVM.parent ()}
+\dontrun{bufid <- .PVM.recv (myparent, 4)}
+\dontrun{data <- .PVM.upkintvec ()}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

@@ -23,8 +23,7 @@
     \item{tid}{task id}
     \item{parent}{parent task id}
     \item{host}{host id}
-    \item{status}{task running status, 1 for running, 0 for not running
-      and -1 indicates error (see \code{\link{.PVM.pstats}}).}
+    \item{status}{task running status (see \code{\link{.PVM.pstats}}).}
     \item{name}{string, name of the host}
   }
 }
@@ -41,7 +40,7 @@
   \code{\link{.PVM.config}}, \code{\link{.PVM.tidtohost}}
 }
 \examples{
-.PVM.tasks ()
+\dontrun{.PVM.tasks ()}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

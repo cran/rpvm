@@ -5,13 +5,13 @@
   Terminate a specified PVM process.
 }
 \usage{
-.PVM.kill(tid)
+.PVM.kill(tids)
 }
 \arguments{
-  \item{tid}{Task id of the PVM process to be killded.}
+  \item{tid}{task ids of the PVM processes to be killded.}
 }
 \value{
-  Return 0 when successful.  Values less than 0 indicate an error.
+  Return number of processes successfully killed.
 }
 \details{
   \code{.PVM.kill} sends a terminate (\code{SIGTERM}) signal to the PVM
@@ -27,7 +27,7 @@
 }
 \examples{
 ## kill one of spawned children
-.PVM.kill (children[1])
+\dontrun{.PVM.kill (children[1])}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

@@ -8,11 +8,11 @@
 .PVM.pstats (tids)
 }
 \arguments{
-  \item{tid}{vector of integer task id of destination process}
+  \item{tids}{vector of integer task id of destination process}
 }
 \value{
-  Returns the status of the PVM processes identified by tids. 1 if
-  process is running, 0 if not, -1 if the tid is bad.
+  Returns the status of the PVM processes (\code{"OK"}, \code{"Not
+  Running"} or \code{"Invalid tid"}) identified by tids.
 }
 \details{
   The routine \code{.PVM.pstat} returns the status of the process
@@ -26,8 +26,8 @@
   \code{\link{.PVM.notify}}
 }
 \examples{
-tid <- .PVM.parent ()
-status <- .PVM.pstats (tid)
+\dontrun{tid <- .PVM.parent ()}
+\dontrun{status <- .PVM.pstats (tid)}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

@@ -1,14 +1,18 @@
+# Process this file with autoconf to produce a configure script.
+
 AC_INIT(DESCRIPTION)
 
 if test -z "${PVM_ROOT}"; then
     echo "Warning: PVM_ROOT not defined."
     echo "Try to guess where pvm is installed..."
-    if test -d /usr/lib/pvm3; then
+    if test -d /usr/lib/pvm3; then                      # Debian
         PVM_ROOT=/usr/lib/pvm3
-    elif test -d ${HOME}/pvm3; then
+    elif test -d /usr/share/pvm3; then                  # Red Hat
+        PVM_ROOT=/usr/share/pvm3
+    elif test -d ${HOME}/pvm3; then                     # User installed
         PVM_ROOT=${HOME}/pvm3
     fi
-    if test -n ${PVM_ROOT}; then
+    if test -n "${PVM_ROOT}"; then
         echo "Found pvm: ${PVM_ROOT} "
         echo "Warning: You need set PVM_ROOT to ${PVM_ROOT} before use pvm."
         echo "See pvm_intro(1PVM)"
@@ -28,31 +32,58 @@ fi
 
 echo "PVM_ARCH is ${PVM_ARCH}"
 
-AC_CHECK_HEADER(pvm3.h,PVM_INCLUDE="",
-    echo "Try to find pvm3.h in ${PVM_ROOT}/include ..."
-    if test -f ${PVM_ROOT}/include/pvm3.h; then
-        echo "Found"
+AC_CHECK_HEADER(pvm3.h,PVM_INCLUDE="",[
+    echo "Try to find pvm3.h ..."
+    if test -f /usr/local/include/pvm3.h; then
+        echo "Found in /usr/local/include"
+        PVM_INCLUDE="-I/usr/local/include"
+    elif test -f ${PVM_ROOT}/include/pvm3.h; then
+        echo "Found in ${PVM_ROOT}/include"
         PVM_INCLUDE="-I${PVM_ROOT}/include"
     else 
         echo "Cannot find pvm header file."; exit 1
     fi
-)
-AC_CHECK_LIB(pvm3,pvm_mytid,PVM_LIBS="",
-    echo "Try to find libpvm3 in ${PVM_ROOT}/lib/${PVM_ARCH} ..."
-    if test -f ${PVM_ROOT}/lib/${PVM_ARCH}/libpvm3.a; then
-        echo "Found"
+])
+
+AC_CHECK_LIB(pvm3,pvm_mytid,PVM_LIBS="",[
+    echo "Try to find libpvm3 ..."
+    if test -f /usr/local/lib/libpvm3.a; then
+        echo "Found in /usr/local/lib"
+        PVM_LIBS="-L/usr/local/lib"
+    elif test -f ${PVM_ROOT}/lib/${PVM_ARCH}/libpvm3.a; then
+        echo "Found in ${PVM_ROOT}/lib/${PVM_ARCH}"
         PVM_LIBS="-L${PVM_ROOT}/lib/${PVM_ARCH}"
     else
         echo "Cannot find libpvm3"; exit 1
     fi
-)
+])
 
-PKG_LIBS="${PVM_LIBS} -lpvm3"
+AC_PATH_PROG(PVMD,pvmd,[
+    echo "Cannot find pvmd executable"
+    echo "Include it in your path or check your pvm installation."
+    exit 1
+])
+
+AC_PATH_PROG(PVMGSPATH,pvmgs,[
+    if test -f ${PVM_ROOT}/bin/${PVM_ARCH}/pvmgs; then
+        PVMGSPATH=${PVM_ROOT}/bin/${PVM_ARCH}
+        echo "Found in ${PVM_ROOT}/bin/${PVM_ARCH}"
+    else 
+        echo "Cannot find pvmgs executable"
+        echo "Include it in your path or check your pvm installation."
+        exit 1
+    fi
+])
+
+PKG_LIBS="${PVM_LIBS} -lpvm3 -lgpvm3"
 PKG_CPPFLAGS="${PVM_INCLUDE}"
+PVMGSPATH=`dirname $PVMGSPATH`
+# PVMGSPATH=${PVMGSPATH%/*}
 
 AC_SUBST(PVM_ROOT)
 AC_SUBST(PVM_ARCH)
 AC_SUBST(PKG_LIBS)
 AC_SUBST(PKG_CPPFLAGS)
+AC_SUBST(PVMGSPATH)
 
-AC_OUTPUT(src/Makevars)
+AC_OUTPUT(src/Makevars inst/pvmhosts)

@@ -26,7 +26,9 @@
   process will be}
 }
 \value{
-  A vector containing \code{tids} of spawned processes.
+  A vector containing \code{tids} of successfully spawned processes (the
+  length could be smaller than the number requested) or -1 if there is
+  an system error.
 }
 \details{
   \emph{flag} is a list of strings used to specify options.  Allowed values 
@@ -84,10 +86,10 @@
 \examples{
 ## spawn 2 children tasks, running R script through shell sript
 ## \file{slaveR.sh}.
-children <- .PVM.spawnR (ntask = 2, slave = "pvm_test.R",
+\dontrun{children <- .PVM.spawnR (ntask = 2, slave = "pvm_test.R",
                          slavedir = paste (Sys.getenv ("R_LIBS"),
                          "/rpvm/demo", sep = ""),
-                         outdir = getwd ())
+                         outdir = getwd ())}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

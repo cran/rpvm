@@ -11,7 +11,7 @@
   \item{bufid}{integer message buffer id}
 }
 \value{
-  Returns integer status code.  Values less than zero indicate an error.
+  Returns 0 if successful or -1 if failed.
 }
 \details{
   This function frees the memory associated with the message buffer
@@ -37,9 +37,9 @@
   \code{\link{.PVM.setrbuf}},  \code{\link{.PVM.recv}} 
 }
 \examples{
-bufid <- .PVM.mkbuf ("Raw")
+\dontrun{bufid <- .PVM.mkbuf ("Raw")}
 ## Send the message ...
-.PVM.freebuf (bufid)
+\dontrun{.PVM.freebuf (bufid)}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

@@ -11,11 +11,11 @@
   None.
 }
 \value{
-  Returns tid of the process that spawned the calling process.
+  Returns tid of the process that spawned the calling process.  
 }
 \details{
   If the calling process was not created with \code{\link{.PVM.spawn}},
-  return -23 (\code{PvmNoParent}), other values indicate error.
+  return 0 (no parent).
 }
 \references{
   PVM documentation
@@ -24,7 +24,7 @@
   \code{\link{.PVM.spawn}}, \code{\link{.PVM.mytid}}
 }
 \examples{
-myparent <- .PVM.parent ()
+\dontrun{myparent <- .PVM.parent ()}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

@@ -21,7 +21,7 @@ PVM.rapply (X, FUN = mean, NTASK = 1)
 }
 \examples{
 a <- matrix(rnorm(100), nrow = 10)
-PVM.rapply (a, sum, 3)
+\dontrun{PVM.rapply (a, sum, 3)}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and

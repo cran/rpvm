@@ -1,4 +1,5 @@
 \name{PVM.pack}
+\alias{PVM.pack}
 \alias{.PVM.pkdouble}
 \alias{.PVM.pkint}
 \alias{.PVM.pkstr}
@@ -9,7 +10,6 @@
 \alias{.PVM.pkdblmat}
 \alias{.PVM.pkstrmat}
 \alias{.PVM.pkfactor}
-
 \title{Packing data}
 \description{
   Pack data into current active send buffer.
@@ -36,7 +36,8 @@
     other element in the vector \code{data} will be packed.}
 }
 \value{
-  Return status code.  Values less than zero indicates an error.
+  \code{.PVM.pkstrvec} returns the maximum length of the strings
+  packed.  Others return 0 if succeeded or -1 if failed.
 }
 \details{
   The first three functions are low-level correspondents of the PVM
@@ -57,6 +58,9 @@
   consideration). \code{.PVM.dblvec} and \code{.PVM.dblmat} are
   recommended for all numerical data.
 
+  \code{.PVM.pkstr} and \code{\link{.PVM.upkstr}} are mainly for
+  communicating with C functions.
+  
   Special values such as NAs, NaNs, Infs, etc., are not supported at
   this point.
 }
@@ -69,7 +73,7 @@
 \examples{
 ## Pack and send a matrix
 a <- matrix (1:20, nrow=4)
-.PVM.pkdblmat (a)
+\dontrun{.PVM.pkdblmat (a)}
 }
 \author{
   Na (Michael) Li \email{lina@u.washington.edu} and
