@@ -1,7 +1,4 @@
 # Emacs: -*- r -*- vim: ft=r 
 .First.lib <- function (lib, pkg) {
     library.dynam("rpvm", pkg, lib)
-    if (!@R_HAVE_SPRNG@) {
-        warning ("SPRNG is not available! Use RNG as your own risk")
-    }
 }

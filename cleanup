@@ -1,8 +1,7 @@
 #! /bin/sh
+find . -name "*~" -exec /bin/rm -rf {} \;
+/bin/rm -rf *.cache
 /bin/rm -rf ./config.*
 /bin/rm -rf src/Makevars
 /bin/rm -rf src/*.so src/*.o
 /bin/rm -rf inst/pvmhosts
-/bin/rm -rf R/zzz.R
-/bin/rm -rf R/sprng.R
-/bin/rm -rf tests/sprng_test.R

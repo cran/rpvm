@@ -9,45 +9,68 @@ library (rpvm)
 # Some arbitary positive integer as message tag
 
 jointag <- 22
+BUFTAG <- 33
+RESULTTAG <- 44
 
 ## Function to be executed by the master
-master.f <- function (numChild = 1) {
-    ## Spawn children 
-    children <- .PVM.spawnR (slave = "pvm_test", ntask = 1)
-    if (all (children < 0)) {
-        warning ("Failed to spawn any tasks\n")
+master.f <- function () {
+    ## Spawn one child
+    child <- .PVM.spawnR (slave = "pvm_test", ntask = 1)
+    if (length (child) != 1 || child < 0) {
+        warning ("Failed to spawn tasks\n")
         .PVM.exit ()
-    } else if (any (children < 0)) {
-        cat ("Failed to spawn some tasks.  Successfully spawned ",
-             sum(children > 0), "tasks\n")
-        children <- children[children > 0]
     }
-    cat("### Spawned ", length (children), "Task, waiting for data \n")
-
+    cat("### Child process ", child, " spawned , waiting for data \n")
+    
     ## Receive data back from children.
-    for (child in children) {
-        ## receive a message from any child process with tag mytag
-        buf <- .PVM.recv (-1, jointag)
-        ## find out which task the message came from
-        bufinfo <- .PVM.bufinfo (buf)
-        cat ("Message received from ", bufinfo$tid, " \n")
+    ## receive a message from the child process with tag mytag
+    buf <- .PVM.recv (child, jointag)
+    ## find out which task the message came from
+    bufinfo <- .PVM.bufinfo (buf)
+    cat ("Message received from ", bufinfo$tid, " \n")
         
-        ## Unpacking messages
-        hello <- .PVM.upkstrvec ()
-        cat (hello, "\n")        
-        msg1 <- .PVM.upkintvec ()
-        cat ("Some integers ", msg1, "\n")
-        msg2 <- .PVM.upkdblvec ()
-        cat ("Some doubles ", msg2, "\n")
-        msg3 <- .PVM.upkdblmat ()
-        cat ("And a matrix\n")
-        print (msg3)
+    ## Unpacking messages
+    hello <- .PVM.upkstrvec ()
+    cat (hello, "\n")        
+    msg1 <- .PVM.upkintvec ()
+    cat ("Some integers ", msg1, "\n")
+    msg2 <- .PVM.upkdblvec ()
+    cat ("Some doubles ", msg2, "\n")
+    msg3 <- .PVM.upkdblmat ()
+    cat ("And a matrix\n")
+    print (msg3)
+    
+    msg4 <- .PVM.upkfactor ()
+    cat ("Even a factor!\n")
 
-        msg4 <- .PVM.upkfactor ()
-        cat ("Even a factor!\n")
-        print (msg4)        
-        cat("That's all, folks \n")
+    cat ("\nLet's try some serialzation stuff \n")
+    amatrx <- matrix (runif (12), nrow = 3)
+    afunc <- function (x) {
+        if (!is.matrix (x)) {
+            stop ("x must be a matrix")
+        }
+        apply (x, 2, mean)
     }
+    .PVM.initsend ()
+    cat ("\nHere is a matrix: \n")
+    print (amatrx)
+    .PVM.serialize (amatrx)
+    cat ("\nand a function \n")
+    print (afunc)
+    .PVM.serialize (afunc)
+    .PVM.send (child, BUFTAG)
+
+    cat ("\nBoth are sent to the child process and the child process\n")
+    cat ("applies the function to the matrix and return the result\n\n")
+    
+    ## collecet result
+    .PVM.recv (child, RESULTTAG)
+    ar <- .PVM.unserialize ()
+    print (ar)
+
+    cat ("\nShould be the same as :\n")
+    print (afunc (amatrx))
+    
     .PVM.exit()
     return (invisible(NULL))
 }
@@ -75,6 +98,17 @@ slave.f <- function (myparent) {
     
     myparent <- .PVM.parent ()
     .PVM.send (myparent, jointag)
+
+    ## Serialization
+    .PVM.recv (myparent, BUFTAG)
+    am <- .PVM.unserialize ()
+    print (am)
+    af <- .PVM.unserialize ()
+    print (af)
+    ares <- af (am)
+    .PVM.initsend ()
+    .PVM.serialize (ares)
+    .PVM.send (myparent, RESULTTAG)
     
     .PVM.exit()
 }
@@ -102,7 +136,7 @@ if (pvmrun) {
     myparent <- .PVM.parent ()
     if (myparent == 0) {
         ## This is master
-        master.f (1)
+        master.f ()
     } else {
         ## This is slave
         slave.f ()

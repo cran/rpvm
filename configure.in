@@ -2,6 +2,8 @@
 
 AC_INIT(DESCRIPTION)
 
+AC_PROG_CC()
+
 echo -n "Check if PVM_ROOT is defined... "
 if test -z "${PVM_ROOT}"; then
     echo "no"
@@ -30,8 +32,7 @@ if test -n "${PVM_ROOT}"; then
     fi
 else
     echo " Cannot find pvm."
-    echo " If pvm is installed, set PVM_ROOT to where pvm is or specify"
-    echo " its location in --with-pvm."
+    echo " If pvm is installed, set PVM_ROOT to where pvm is."
     echo " Otherwise, please install pvm first."
     exit 1
 fi
@@ -94,7 +95,7 @@ AC_PATH_PROG(PVMD,pvmd,
 
 AC_PATH_PROG(PVMGSPATH,pvmgs,
 [   if test -f ${PVM_ROOT}/bin/${PVM_ARCH}/pvmgs; then
-        PVMGSPATH=${PVM_ROOT}/bin/${PVM_ARCH}
+
         echo "Found in ${PVM_ROOT}/bin/${PVM_ARCH}"
     else 
         echo "Cannot find pvmgs executable"
@@ -103,58 +104,8 @@ AC_PATH_PROG(PVMGSPATH,pvmgs,
     fi  ]
 )
 
-AC_ARG_WITH(sprng,
-[   --with-sprng=/path/to/sprng          Location of SPRNG library.],
-[   if test "${withval}" = no; then
-        want_sprng=no
-    elif test "${withval}" = yes; then
-        want_sprng=yes
-    else
-        want_sprng=yes
-        SPRNG_ROOT=${withval} 
-    fi  ],
-[   want_sprng=no
-    R_HAVE_SPRNG=FALSE  ]
-)
-
-if test "${want_sprng}" = yes; then
-    echo "Try to find sprng.h ..."
-    if test -f ${SPRNG_ROOT}/include/sprng.h; then
-        echo "Found in ${SPRNG_ROOT}/include"
-        AC_DEFINE(HAVE_SPRNG)
-        R_HAVE_SPRNG=TRUE
-        SPRNG_INCLUDE="-I${SPRNG_ROOT}/include"
-    else 
-        AC_CHECK_HEADER(sprng.h, 
-        [   AC_DEFINE(HAVE_SPRNG)
-            R_HAVE_SPRNG=TRUE
-            SPRNG_INCLUDE=""    ],
-        [   echo "Cannot find sprng 2.0 header file."
-            exit 1  ]
-        )
-    fi
-
-    echo "Try to find libsprng.a ..."
-    if test -f ${SPRNG_ROOT}/lib/libsprng.a; then
-        echo "Found in ${SPRNG_ROOT}/lib"
-        SPRNG_LIBS="-L${SPRNG_ROOT}/lib -lsprng"
-    else
-        AC_CHECK_LIB(sprng,main,SPRNG_LIBS="",
-        [   echo "Cannot find libsprng"; 
-            exit 1  ]
-        )
-    fi
-
-    AC_CHECK_LIB(gmp,main,
-    [   AC_DEFINE(HAVE_LIBGMP)
-        SPRNG_LIBS="$SPRNG_LIBS -lgmp"  ],
-    [   echo "libgmp not found. exiting..."
-        exit 1  ]
-    )
-fi
-
-PKG_LIBS="${PVM_LIBS} -lpvm3 -lgpvm3 ${SPRNG_LIBS}"
-PKG_CPPFLAGS="${PVM_INCLUDE} ${SPRNG_INCLUDE}"
+PKG_LIBS="${PVM_LIBS} -lpvm3 -lgpvm3"
+PKG_CPPFLAGS="${PVM_INCLUDE}"
 PVMGSPATH=`dirname $PVMGSPATH`
 
 AC_SUBST(PVM_ROOT)
@@ -162,7 +113,5 @@ AC_SUBST(PVM_ARCH)
 AC_SUBST(PKG_LIBS)
 AC_SUBST(PKG_CPPFLAGS)
 AC_SUBST(PVMGSPATH)
-AC_SUBST(DEFS)
-AC_SUBST(R_HAVE_SPRNG)
 
-AC_OUTPUT(src/Makevars inst/pvmhosts R/zzz.R R/sprng.R tests/sprng_test.R)
+AC_OUTPUT(src/Makevars inst/pvmhosts) 

@@ -1,3 +1,9 @@
+2002-04-22: Version 0.5.0       Na (Michael) Li <lina@u.washington.edu>
+
+    * Splited rsprng out as a separate library but retain a couple of
+      interface functions to rsprng for convenience.
+    * Added serialization code by Luke Tierney <luke@stat.umn.edu>.
+
 2002-03-08: Version 0.4.2       Na (Michael) Li <lina@u.washington.edu>
     
     * Fixed a bug in rpvm_spawn where the last element of (char **) argv

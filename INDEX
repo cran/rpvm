@@ -1,45 +1,40 @@
-PVM.barrier              Group synchronization
-PVM.bcast                Broadcasting the data
-PVM.buffers              Manipulating Message Buffers
-.PVM.bufinfo             Message buffer infomation
-.PVM.config              PVMD configuration
-.PVM.exit                Unregister process from local PVM deamon.
-.PVM.freebuf             Free message buffer
-PVM.gather               Gather the data into root
-PVM.getinst              Instance number identified by group name and
-                         task id
-PVM.gettid               Task id identified by group name and instance
-                         number
-PVM.group                Join or leave a names group
-PVM.gsize                Get the size of the group
-.PVM.initsend            Initialize send buffer
-.PVM.kill                Kill pvm process
-.PVM.mcast               Multicast data
-.PVM.mkbuf               Create message buffer
-.PVM.mstats              Status of host machines
-.PVM.mytid               Current task id
-.PVM.notify              Monitor pvmd
-.PVM.nrecv               Nonblocking receive
-PVM.options              libpvm Options
-PVM.pack                 Packing data
-.PVM.parent              Parent task id
-.PVM.probe               Probe receive
-.PVM.pstats              Status of PVM processes
-PVM.rapply               Parallel apply
-.PVM.recv                Blocking receive
-PVM.reduce               Reduction
-PVM.scatter              Scatter a vector across the group
-.PVM.send                Send data
-.PVM.spawn               Spawn child tasks
-.PVM.tasks               Tasks information
-.PVM.tidtohost           Host id of a task
-.PVM.trecv               Timeout receive
-PVM.unpack               Unpacking data
-PVMD                     Vitural Machine Control
-free.sprng               Free memory used by SPRNG
-init.sprng               Initialize SPRNG (Scalable Parallel Random
-                         Number Generator)
-pack.sprng               Pack the RNG state into a string.
-spawn.sprng              Spawn new random number streams based on the
-                         current one.
-unpack.sprng             Unpack a string encoding the RNG state.
+PVM.barrier             Group synchronization
+PVM.bcast               Broadcasting the data
+PVM.buffers             Manipulating Message Buffers
+.PVM.bufinfo            Message buffer infomation
+.PVM.config             PVMD configuration
+.PVM.exit               Unregister process from local PVM deamon.
+.PVM.freebuf            Free message buffer
+PVM.gather              Gather the data into root
+PVM.getinst             Instance number identified by group name and
+                        task id
+PVM.gettid              Task id identified by group name and instance
+                        number
+PVM.group               Join or leave a names group
+PVM.gsize               Get the size of the group
+.PVM.initsend           Initialize send buffer
+.PVM.kill               Kill pvm process
+.PVM.mcast              Multicast data
+.PVM.mkbuf              Create message buffer
+.PVM.mstats             Status of host machines
+.PVM.mytid              Current task id
+.PVM.notify             Monitor pvmd
+.PVM.nrecv              Nonblocking receive
+PVM.options             libpvm Options
+PVM.pack                Packing data
+.PVM.parent             Parent task id
+.PVM.probe              Probe receive
+.PVM.pstats             Status of PVM processes
+PVM.rapply              Parallel apply
+.PVM.recv               Blocking receive
+PVM.reduce              Reduction
+PVM.scatter             Scatter a vector across the group
+.PVM.send               Send data
+PVM.serialize           Serialize R Objects
+.PVM.spawn              Spawn child tasks
+.PVM.tasks              Tasks information
+.PVM.tidtohost          Host id of a task
+.PVM.trecv              Timeout receive
+PVM.unpack              Unpacking data
+PVMD                    Vitural Machine Control
+init.sprng.master       Interface to rsprng for initializing SPRNG

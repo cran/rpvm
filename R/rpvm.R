@@ -1,8 +1,9 @@
+# Emacs: -*- r -*- vim: ft=r 
 ## pypvm uses exceptions rather than return values to indicate
 ## problems.  Should we do the same, or "directly map"?  (i.e. we
 ## would have to consider "try"...)
 
-## $Id: rpvm.R,v 1.29 2002/03/18 23:48:13 snake Exp $
+## $Id: rpvm.R,v 1.31 2002/04/22 20:00:05 snake Exp $
 
 .PVM.encoding <- 0:2
 names (.PVM.encoding) <- c("Default",
@@ -502,3 +503,104 @@ PVM.rapply <- function (X,
     .PVM.exit()
     return (unlist (partial.results))
 }
+
+#
+# wrapper functions for SPRNG (Scalable Parallel Random Number Generator)
+# library
+
+.SPRNG.INIT.TAG <- 199
+
+init.sprng.master <- function (children,                         
+                               seed = 0,
+                               kindprng = "default",
+                               para = 0) {
+    if (require (rsprng)) {
+        cat ("Sorry, SPRNG is not available")
+        return (invisible (NULL))
+    }
+    if (!is.character(kindprng) || length (prngkind) > 1) {
+        stop ("kindprng' must be a character string of length 1.")
+    }
+    if (!is.na (pmatch (kindprng, "default"))) {
+        kindprng <- "LFG"
+    }
+    kind <- pmatch (kindprng, c ("LFG", "LCG", "LCG64",
+                                 "CMRG", "MLFG", "PMLCG")) - 1
+    if (is.na (kind)) {
+        stop(paste("'", kindprng, "' is not a valid choice", sep = ""))
+    }
+    for (i in 1:length (children)) {
+        .PVM.initsend ()
+        .PVM.pkint (length (children) + 1)
+        .PVM.pkint (i)
+        .PVM.pkint (seed)
+        .PVM.pkstr (kindprng)
+        .PVM.pkint (para)
+        .PVM.send (children[i], .SPRNG.INIT.TAG)
+    }
+    init.sprng (length (children) + 1, 0, seed, kindprng, para)
+}
+
+init.sprng.slave <- function () {
+    if (require (rsprng)) {
+        cat ("Sorry, SPRNG is not available")
+        return (invisible (NULL))
+    }
+    myparent <- .PVM.parent ()
+    .PVM.recv (myparent, .SPRNG.INIT.TAG)
+    nstream  <- .PVM.upkint (1)
+    streamno <- .PVM.upkint (1)
+    seed     <- .PVM.upkint (1)
+    kindprng <- .PVM.upkstr (10)
+    para     <- .PVM.upkint (1)
+    init.sprng (nstream, streamno, seed, kindprng, para)
+}
+
+init.sprng.group <- function (group,
+                              rootinst = 0,
+                              seed = 0,
+                              kindprng = "default",
+                              para = 0) {
+    if (require (rsprng)) {
+        cat ("Sorry, SPRNG is not available")
+        return (invisible (NULL))
+    }
+    if (!is.character(kindprng) || length (prngkind) > 1) {
+        stop ("kindprng' must be a character string of length 1.")
+    }
+    if (!is.na (pmatch (kindprng, "default"))) {
+        kindprng <- "LFG"
+    } 
+    kind <- pmatch (kindprng, c ("LFG", "LCG", "LCG64",
+                                 "CMRG", "MLFG", "PMLCG")) - 1
+    if (is.na (kind)) {
+        stop(paste("'", kindprng, "' is not a valid choice", sep = ""))
+    }
+                                        # get my group instance number
+    myinst <- .PVM.getinst ()
+    if (myinst == rootinst) {
+                                        # broadcast the init information if
+                                        # I'm the root
+        .PVM.initsend ()
+        .PVM.pkint (seed)
+        .PVM.pkstr (kindprng)
+        .PVM.pkint (para)
+        .PVM.bcast (group, .SPRNG.INIT.TAG)
+    } else {
+                                        # receive the init information from
+                                        # the root
+        .PVM.recv (.PVM.gettid (group, rootinst), .SPRNG.INIT.TAG)        
+        seed <- .PVM.upkint (1)
+        kindprng <- .PVM.upkstr (10)
+        para <- .PVM.upkint (1)
+    }
+    init.sprng (.PVM.gsize (group), .PVM.getinst (), seed,
+                kindprng, para)
+}
+
+## (Un)Serialization of R objects (by  Luke Tierney <luke@stat.umn.edu>)
+.PVM.serialize <- function(object, refhook = NULL)
+    .Call("rpvm_pksexp", object, refhook)
+
+.PVM.unserialize <- function(refhook = NULL)
+    .Call("rpvm_upksexp", refhook)

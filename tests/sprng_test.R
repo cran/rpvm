@@ -54,9 +54,7 @@ slave.f <- function () {
 
 ## Actuall codes
 
-if (!@R_HAVE_SPRNG@) {
-    warning ("Sorry, SPRNG is not avaiable! sprng_test is not run.")
-} else {
+if (require (rsprng)) {
     if (is.na (.PVM.config ())) {
          cat ("pvmd is not running. Try to start pvmd...\n")
         .PVM.start.pvmd (file.path (.lib.loc[1], "rpvm", "pvmhosts"))
@@ -73,4 +71,6 @@ if (!@R_HAVE_SPRNG@) {
         ## This is slave
         slave.f ()
     }
+} else {
+    warning ("Sorry, SPRNG is not avaiable! sprng_test is not run.")
 }

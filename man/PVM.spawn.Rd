@@ -61,13 +61,13 @@
   slave script and the output \code{.Rout} file.
 
   \enumerate{
-    \item{}{given as arguments \code{slavedir} and \code{outdir}.  This is
+    \item {given as arguments \code{slavedir} and \code{outdir}.  This is
       only useful if all hosts on the virtual machine can access the
       directory (through NFS).  Function \code{getwd()} returns current
       working directory.}
-    \item{}{if either arguments is \code{NULL}, environmental variables
+    \item {if either arguments is \code{NULL}, environmental variables
       \code{RSLAVEDIR} and \code{RSLAVEOUT} are used.}
-    \item{}{if either environmental variables is not defined,
+    \item {if either environmental variables is not defined,
       \code{$R_LIBS/rpvm} and \code{$TMPDIR} are used.}
   }
 
@@ -87,8 +87,8 @@
 ## spawn 2 children tasks, running R script through shell sript
 ## \file{slaveR.sh}.
 \dontrun{children <- .PVM.spawnR (ntask = 2, slave = "pvm_test.R",
-                         slavedir = paste (Sys.getenv ("R_LIBS"),
-                         "/rpvm/demo", sep = ""),
+                         slavedir = file.path(system.file(package = "rpvm"), 
+                                              "demo"),
                          outdir = getwd ())}
 }
 \author{
