@@ -2480,7 +2480,7 @@ fi
 if test $ac_cv_header_pvm3_h = yes; then
   PVM_INCLUDE=""
 else
-      echo "Try to find pvm3.h ..."
+     echo "Try to find pvm3.h ..."
     if test -f /usr/local/include/pvm3.h; then
         echo "Found in /usr/local/include"
         PVM_INCLUDE="-I/usr/local/include"
@@ -2548,7 +2548,7 @@ echo "${ECHO_T}$ac_cv_lib_pvm3_main" >&6
 if test $ac_cv_lib_pvm3_main = yes; then
   PVM_LIBS=""
 else
-      echo "Try to find libpvm3 ..."
+     echo "Try to find libpvm3 ..."
     if test -f /usr/local/lib/libpvm3.a; then
         echo "Found in /usr/local/lib"
         PVM_LIBS="-L/usr/local/lib"
@@ -2643,7 +2643,7 @@ else
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
+for as_dir in $PATH $PVM_ROOT/lib
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
@@ -2656,10 +2656,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_PVMD" && ac_cv_path_PVMD="   echo "Cannot find pvmd executable"
-    echo "Include it in your path or check your pvm installation."
-    exit 1
-"
+  test -z "$ac_cv_path_PVMD" && ac_cv_path_PVMD=""""
   ;;
 esac
 fi
@@ -2673,6 +2670,11 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
+if test -z "$PVMD"; then
+    echo "Cannot find pvmd executable"
+    echo "Include it in your path or check your pvm installation."
+    exit 1
+fi
 
 # Extract the first word of "pvmgs", so it can be a program name with args.
 set dummy pvmgs; ac_word=$2
@@ -2687,7 +2689,7 @@ else
   ;;
   *)
   as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
+for as_dir in $PATH $PVM_ROOT/bin/$PVM_ARCH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
@@ -2700,15 +2702,7 @@ do
 done
 done
 
-  test -z "$ac_cv_path_PVMGSPATH" && ac_cv_path_PVMGSPATH="   if test -f ${PVM_ROOT}/bin/${PVM_ARCH}/pvmgs; then
-
-        echo "Found in ${PVM_ROOT}/bin/${PVM_ARCH}"
-    else
-        echo "Cannot find pvmgs executable"
-        echo "Include it in your path or check your pvm installation."
-        exit 1
-    fi
-"
+  test -z "$ac_cv_path_PVMGSPATH" && ac_cv_path_PVMGSPATH=""""
   ;;
 esac
 fi
@@ -2722,6 +2716,11 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
+if test -z "$PVMGSPATH"; then
+    echo "Cannot find pvmgs executable"
+    echo "Include it in your path or check your pvm installation."
+    exit 1
+fi
 
 PKG_LIBS="${PVM_LIBS} -lpvm3 -lgpvm3"
 PKG_CPPFLAGS="${PVM_INCLUDE}"

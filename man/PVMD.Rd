@@ -19,8 +19,9 @@
   \item{block}{logical, if true, block until startup of all hosts complete}
 }
 \value{
-  \code{.PVM.start.pvmd} and \code{.PVM.halt} returns 0 if
-  successful or -1 if failed.
+  \code{.PVM.start.pvmd} will return the result from \code{.PVM.config}.
+  
+  \code{.PVM.halt} returns \code{TRUE} if successful.
 
   \code{.PVM.addhosts} returns a vector of host ids that has been
   successfully added to the virtual machine.
@@ -72,19 +73,21 @@
 }
 \examples{
 # start a new virtual machine on local machine 
-\dontrun{.PVM.start.pvmd ()}
-# add more hosts to it
-\dontrun{.PVM.addhosts ("sparky",
-               "thud.cs.utk.edu  ep=$R_LIBS/rpvm/:$PVM_ROOT/bin/$PVM_ARCH")}
+\dontrun{
+.PVM.start.pvmd ()
+# add two more hosts to it
+.PVM.addhosts ("sparky",
+               "thud.cs.utk.edu  ep=$R_LIBS/rpvm/")
 # do some work ...
 # finished with one machine
-\dontrun{.PVM.delhosts ("thud.cs.utk.edu")}
+.PVM.delhosts ("thud.cs.utk.edu")
 # do some other work ...
 # finished with pvm
-\dontrun{.PVM.halt ()}
+.PVM.halt ()
+}
 }
 \author{
-  Na (Michael) Li \email{lina@u.washington.edu} and
+  Na (Michael) Li \email{nali@umn.edu} and
   A.J. Rossini \email{rossini@u.washington.edu}
 }
 \keyword{utilities}

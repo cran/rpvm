@@ -54,7 +54,7 @@ gname <- "pvmtest"
 \dontrun{.PVM.bcast(gname, msgtag = 11)}
 }
 \author{
-  Na (Michael) Li \email{lina@u.washington.edu} and
+  Na (Michael) Li \email{nali@umn.edu} and
   A.J. Rossini \email{rossini@u.washington.edu}
 }
 \keyword{utilities}

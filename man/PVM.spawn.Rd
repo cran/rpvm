@@ -8,10 +8,10 @@
   slave R processes on the virtual machine.
 }
 \usage{
-.PVM.spawn (task = "slaveR.sh",  ntask = 1, flag  = "Default", where = "",
-            arglist = "")
+.PVM.spawn (task, ntask = 1, flag  = "Default", where = "",
+            arglist = NULL, verbose = FALSE)
 .PVM.spawnR (slave, ntask = 1, flag  = "Default", where = "",
-             slavedir = NULL, outdir = getwd ())
+             slavedir = "demo", outdir = "/tmp", verbose = FALSE)
 .PVM.spawnflags
 }
 \arguments{
@@ -23,7 +23,9 @@
   \item{slave}{name of slave \code{R} script}
   \item{slavedir}{full path to the slave script}
   \item{outdir}{full path to the directory where the output from slave R
-  process will be}
+    process will be}
+  \item{verbose}{if true, print out more information which might be
+    helpful in debugging}
 }
 \value{
   A vector containing \code{tids} of successfully spawned processes (the
@@ -51,28 +53,26 @@
   location PVM looks at is \code{$PVM_ROOT/bin/$PVM_ARCH}.
 
   To spawn a R process, one can use the script \file{slaveR.sh} which
-  can be included in the search path of pvmd, for example by passing
+  has to be included in the search path of pvmd, for example by passing
   \code{ep="$R_LIBS/rpvm"} (the default place this script is installed)
-  to \code{.PVM.addhosts}.  
+  to \code{.PVM.addhosts}.  Note that here \code{"R_LIBS"} referes to
+  the R library on the \emph{slave} node.
 
   \code{.PVM.spawnR} can be used to conveniently spawn slave \code{R}
-  processes.  The name of slave script must be given as argument
-  \code{slave}.  There are three ways to specify the full path to the
-  slave script and the output \code{.Rout} file.
+  processes.  The paths for the slave script and output file should be
+  given as arguments to\code{slavedir} and \code{outdir}.
 
-  \enumerate{
-    \item {given as arguments \code{slavedir} and \code{outdir}.  This is
-      only useful if all hosts on the virtual machine can access the
-      directory (through NFS).  Function \code{getwd()} returns current
-      working directory.}
-    \item {if either arguments is \code{NULL}, environmental variables
-      \code{RSLAVEDIR} and \code{RSLAVEOUT} are used.}
-    \item {if either environmental variables is not defined,
-      \code{$R_LIBS/rpvm} and \code{$TMPDIR} are used.}
-  }
+  The name of slave script must be given as argument \code{slave}.  It
+  is crucial that this script is present and can be found on each slave
+  node. The input file path has to be relative to \code{system.file
+  (package = "rpvm")} on each node, and it has to be the same on all
+  nodes.  The default input path is the \code{"demo"} subdirectory
+  of \code{rpvm} installed directory.
 
-  The output file from slave \code{R} process will have the same name as
-  the slave script with process id and \code{.Rout} appended to it.
+  The output path can be either relative to the home directory or an
+  absolute pathname (the default is \code{"/tmp"}).  The output file
+  from slave \code{R} process will have the same name as the slave
+  script with process id and \code{.Rout} appended to it.
 
   \code{.PVM.spawnflags} is a mapping of strings to integer constants
   defined by PVM.
@@ -84,15 +84,12 @@
   \code{\link{.PVM.mytid}}
 }
 \examples{
-## spawn 2 children tasks, running R script through shell sript
-## \file{slaveR.sh}.
-\dontrun{children <- .PVM.spawnR (ntask = 2, slave = "pvm_test.R",
-                         slavedir = file.path(system.file(package = "rpvm"), 
-                                              "demo"),
-                         outdir = getwd ())}
+\dontrun{
+children <- .PVM.spawnR (slave = "helloR.R")
+}
 }
 \author{
-  Na (Michael) Li \email{lina@u.washington.edu} and
+  Na (Michael) Li \email{nali@umn.edu} and
   A.J. Rossini \email{rossini@u.washington.edu}
 }
 \keyword{utilities}

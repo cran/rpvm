@@ -3,7 +3,7 @@
 ## problems.  Should we do the same, or "directly map"?  (i.e. we
 ## would have to consider "try"...)
 
-## $Id: rpvm.R,v 1.31 2002/04/22 20:00:05 snake Exp $
+## $Id: rpvm.R,v 1.39 2004/04/15 19:10:30 nali Exp $
 
 .PVM.encoding <- 0:2
 names (.PVM.encoding) <- c("Default",
@@ -14,59 +14,73 @@ names (.PVM.encoding) <- c("Default",
 ### Process control
 
 .PVM.mytid <- function () {
-    .Call ("rpvm_mytid")
+    .Call ("rpvm_mytid", PACKAGE = "rpvm")
 }
 
 .PVM.parent <- function () {
-    .Call ("rpvm_parent")
+    .Call ("rpvm_parent", PACKAGE = "rpvm")
 }
   
 .PVM.exit <- function () {
-    info  <- .Call ("rpvm_exit")
+    info  <- .Call ("rpvm_exit", PACKAGE = "rpvm")
     return (invisible (info))
 }
 
 .PVM.pstats <- function (tids) {
-    .Call ("rpvm_pstats", as.integer (tids))
+    .Call ("rpvm_pstats", as.integer (tids), PACKAGE = "rpvm")
 }
 
 .PVM.spawnR <- function (slave,                       
                          ntask = 1,
                          flag =  "Default",
                          where = "",
-                         slavedir = getwd (),
-                         outdir = getwd ()) {
+                         slavedir = "demo",
+                         outdir = "/tmp",
+                         verbose = FALSE) {
     cat ("\n")
     cat ("Try to spawn tasks...\n")
-    .PVM.spawn (ntask = ntask,
+    .PVM.spawn (task = "slaveR.sh",
+                ntask = ntask,
                 flag = flag,
                 where = where,
-                arglist = c(slave, slavedir, outdir))
+                arglist = c(slave, slavedir, outdir),
+                verbose = verbose)
 }
 
-.PVM.spawn <- function (task = system.file ("slaveR.sh", package = "rpvm"), 
+.PVM.spawn <- function (task,
                         ntask = 1,
                         flag  = "Default",
                         where = "",
-                        arglist = NULL) {    
+                        arglist = NULL,
+                        verbose = FALSE) {    
     .PVM.spawnflags <- c (0, 2^(0:5))
     names (.PVM.spawnflags) <- c("Default", "Host", "Arch",
                                  "Debug", "Trace", "MppFront", "Compl")
+
+    total.flag <- 0
+    for (myflag in flag) {
+        this.flag <- match.arg (myflag, names (.PVM.spawnflags))
+        if (verbose)
+            print (paste ("Flag ", this.flag, " matched\n"))
+        total.flag <- total.flag + .PVM.spawnflags[this.flag]
+    }
     tids <- .Call ("rpvm_spawn",
                    as.character (task),
                    as.integer   (ntask),
-                   as.integer   (sum(.PVM.spawnflags[flag])),
+                   as.integer   (total.flag),
                    as.character (where),
-                   as.character (arglist))
+                   as.character (arglist),
+                   as.integer (verbose),
+                   PACKAGE = "rpvm")
     return (tids[tids > 0])
 }
 
 .PVM.kill <- function (tids) {
-    .Call ("rpvm_kill", as.integer(tids))
+    .Call ("rpvm_kill", as.integer(tids), PACKAGE = "rpvm")
 }
 
 .PVM.tasks <- function (where = 0) {
-    tasks <- .Call ("rpvm_tasks", as.integer (where))
+    tasks <- .Call ("rpvm_tasks", as.integer (where), PACKAGE = "rpvm")
     names (tasks) <- c("tid", "parent", "host", "status", "name")
     return (tasks)
 }
@@ -75,41 +89,38 @@ names (.PVM.encoding) <- c("Default",
 
 .PVM.start.pvmd <- function (hosts = "", block = T) {
     info <- .Call ("rpvm_start_pvmd", as.character (hosts),
-                   as.integer (block))
-    return (invisible (info))
+                   as.integer (block), PACKAGE = "rpvm")
+    .PVM.config ()
 }
 
-.PVM.halt <- function ()
-    .Call ("rpvm_halt")
-
+.PVM.halt <- function () {
+    .Call ("rpvm_halt", PACKAGE = "rpvm")
+}
 .PVM.addhosts <- function (hosts) {
-    htids <- .Call ("rpvm_addhosts", as.character (hosts))
+    htids <- .Call ("rpvm_addhosts", as.character (hosts), PACKAGE = "rpvm")
     htids[htids > 0]
 }
 
 .PVM.delhosts <- function (hosts) {
-    htids <- .Call ("rpvm_delhosts", as.character (hosts))
+    htids <- .Call ("rpvm_delhosts", as.character (hosts), PACKAGE = "rpvm")
     htids[htids > 0]
 }
 
 .PVM.mstats <- function (hosts) {
-    .Call ("rpvm_mstats", as.character (hosts))    
+    .Call ("rpvm_mstats", as.character (hosts), PACKAGE = "rpvm")    
 }
 
 .PVM.config <- function () {
-    config <- data.frame (.Call ("rpvm_config"))
-    if (!is.na (config)) {
-        names (config) <- c ("host.id", "name", "arch", "speed")
-    } else {
-        names (config) <- NULL
-    }
+    config <- .Call ("rpvm_config", PACKAGE = "rpvm")
+    config <- data.frame (config)
+    names (config) <- c ("host.id", "name", "arch", "speed")
     config
-}   
+}
 
 ### Misc
 
 .PVM.tidtohost <- function (tid) {
-    .Call ("rpvm_parent", as.integer (tid))
+    .Call ("rpvm_parent", as.integer (tid), PACKAGE = "rpvm")
 }
 
 .PVM.notify <- function (msgtag,
@@ -119,7 +130,17 @@ names (.PVM.encoding) <- c("Default",
     names (what.parameters) <- c ("ExitTask", "DeleteHost", "AddHost")
     what <- what.parameters [match.arg (what)]
     .Call ("rpvm_notify", as.integer (what), as.integer (msgtag),
-           as.integer (par))
+           as.integer (par), PACKAGE = "rpvm")
+}
+
+.PVM.unnotify <- function (msgtag,
+                         what = c("ExitTask", "DeleteHost", "AddHost"),
+                         par = 0) {
+    what.parameters <- 1:3
+    names (what.parameters) <- c ("ExitTask", "DeleteHost", "AddHost")
+    what <- what.parameters [match.arg (what)]
+    .Call ("rpvm_notify", as.integer (what), as.integer (msgtag),
+           as.integer (par), PACKAGE = "rpvm")
 }
 
 PVM.options <- function (what, val) {
@@ -133,175 +154,135 @@ PVM.options <- function (what, val) {
         stop ("Invalid option")
     }
     if (missing (val)) {
-        .Call ("rpvm_getopt", as.integer (what))
+        .Call ("rpvm_getopt", as.integer (what), PACKAGE = "rpvm")
     } else {
-        .Call ("rpvm_setopt", as.integer (what), as.integer (val))
+        .Call ("rpvm_setopt", as.integer (what), as.integer (val),
+               PACKAGE = "rpvm")
     }
 }
 ##
 
 ### Group library
 .PVM.joingroup <- function (group) {
-    .Call ("rpvm_joingroup", as.character (group))
+    .Call ("rpvm_joingroup", as.character (group), PACKAGE = "rpvm")
 }
 
 .PVM.lvgroup <- function (group) {
-    info <- .Call ("rpvm_lvgroup", as.character (group))
+    info <- .Call ("rpvm_lvgroup", as.character (group), PACKAGE = "rpvm")
     return (invisible (info))  
 }
 
 .PVM.gettid <- function (group, inum = 0:(.PVM.gsize(group) - 1)) {
-    .Call ("rpvm_gettid", as.character (group), as.integer (inum))
+    .Call ("rpvm_gettid", as.character (group), as.integer (inum),
+           PACKAGE = "rpvm")
 }
 
 .PVM.getinst <- function (group, tids = .PVM.mytid ()) {
-    .Call ("rpvm_getinst", as.character (group), as.integer (tids))
+    .Call ("rpvm_getinst", as.character (group), as.integer (tids),
+           PACKAGE = "rpvm")
 }
 
 .PVM.gsize <- function (group) {
-    .Call ("rpvm_gsize", as.character (group))
+    .Call ("rpvm_gsize", as.character (group), PACKAGE = "rpvm")
 }
 
 .PVM.barrier <- function (group, count = .PVM.gsize (group)) {
-    info <- .Call ("rpvm_barrier", as.character (group), as.integer (count))
+    info <- .Call ("rpvm_barrier", as.character (group), as.integer (count),
+                   PACKAGE = "rpvm")
     return (invisible (info))
 }
 
 .PVM.bcast <- function (group, msgtag) {
-    info <- .Call ("rpvm_bcast", as.character (group), as.integer (msgtag))
+    info <- .Call ("rpvm_bcast", as.character (group), as.integer (msgtag),
+                   PACKAGE = "rpvm")
     return (invisible (info))
 }
 
-.PVM.scatter <- function (x, ...) {
-    if (is.null (class (x))) {
-        if (is.integer (x)) {
-            class (x) <- "integer"
-        } else if (is.double (data)) {
-            class (x) <- "double"
-        } 
+.PVM.scatter <- function (x, count, msgtag, group, rootginst = 0) {
+    if (is.integer (x)) {
+        .Call ("rpvm_scatter_integer", x, as.integer (count),
+               as.integer (msgtag), as.character (group),
+               as.integer (rootginst), PACKAGE = "rpvm")
+    } else {
+        .Call ("rpvm_scatter_double", as.double (x), as.integer (count),
+               as.integer (msgtag), as.character (group),
+               as.integer (rootginst), PACKAGE = "rpvm")
     }
-    UseMethod (".PVM.scatter", x, ...)
 }
 
-.PVM.scatter.default <- function (x, ...) {
-    stop ("Unsupported class.  Must be integer or double vectors.")
-}
-
-.PVM.scatter.integer <- function (x, count, msgtag, group, rootginst = 0) {
-    .Call ("rpvm_scatter_integer", as.integer (x), as.integer (count),
-           as.integer (msgtag), as.character (group), as.integer (rootginst))
-}
-
-.PVM.scatter.double <- function (x, count, msgtag, group, rootginst = 0) {
-    .Call ("rpvm_scatter_double", as.double (x), as.integer (count),
-           as.integer (msgtag), as.character (group), as.integer (rootginst))
-}
-
-.PVM.gather <- function (x, ...) {
-    if (is.null (class (x))) {
-        if (is.integer (x)) {
-            class (x) <- "integer"
-        } else if (is.double (data)) {
-            class (x) <- "double"
-        } 
+.PVM.gather <- function (x, count = length (x),
+                         msgtag, group, rootginst = 0) {
+    if (is.integer (x)) {
+        .Call ("rpvm_gather_integer", x, as.integer (count),
+               as.integer (msgtag), as.character (group),
+               as.integer (rootginst), PACKAGE = "rpvm")
+    } else {
+        .Call ("rpvm_gather_double", as.double (x), as.integer (count),
+               as.integer (msgtag), as.character (group),
+               as.integer (rootginst), PACKAGE = "rpvm")
     }
-    UseMethod (".PVM.gather", x, ...)
 }
 
-.PVM.gather.default <- function (x, ...) {
-    stop ("Unsupported class.  Must be integer or double vectors.")
-}
-
-.PVM.gather.integer <- function (x, count = length (x),
-                                 msgtag, group, rootginst = 0) {
-    .Call ("rpvm_gather_integer", as.integer (x), as.integer (count),
-           as.integer (msgtag), as.character (group), as.integer (rootginst))
-}
-
-.PVM.gather.double <- function (x, count = length (x),
-                                msgtag, group, rootginst = 0) {
-    .Call ("rpvm_gather_double", as.double (x), as.integer (count),
-           as.integer (msgtag), as.character (group), as.integer (rootginst))
-}
-
-.PVM.reduce <- function (x, ...) {
-    if (is.null (class (x))) {
-        if (is.integer (x)) {
-            class (x) <- "integer"
-        } else if (is.double (data)) {
-            class (x) <- "double"
-        } 
-    }
-    UseMethod (".PVM.reduce", x, ...)
-}
-
-.PVM.reduce.default <- function (x, ...) {
-    stop ("Unsupported class.  Must be integer or double vectors.")
-}
-
-.PVM.reduce.integer <- function (x, func = "Min", count = length (x),
-                                 msgtag, group, rootginst = 0) {
+.PVM.reduce <- function (x, func = "Min", count = length (x),
+                         msgtag, group, rootginst = 0) {
     funcidx <- pmatch (func, c("Min", "Max", "Sum", "Product"))
     if (is.na (funcidx)) {
         stop ("Invalid arguments for func.")
     }
-    .Call ("rpvm_reduce_integer", as.integer (x), as.integer (funcidx),
-           as.integer (count), as.integer (msgtag),
-           as.character (group), as.integer (rootginst))
-}
-
-.PVM.reduce.double <- function (x, func = "Min", count = length (x),
-                                 msgtag, group, rootginst = 0) {
-    funcidx <- pmatch (func, c("Min", "Max", "Sum", "Product"))
-    if (is.na (funcidx)) {
-        stop ("Invalid arguments for func.")
+    if (is.integer (x)) {
+        .Call ("rpvm_reduce_integer", x, as.integer (funcidx),
+               as.integer (count), as.integer (msgtag),
+               as.character (group), as.integer (rootginst), PACKAGE = "rpvm")
+    } else {
+        .Call ("rpvm_reduce_double", as.double (x), as.integer (funcidx),
+               as.integer (count), as.integer (msgtag),
+               as.character (group), as.integer (rootginst), PACKAGE = "rpvm")
     }
-    .Call ("rpvm_reduce_double", as.double (x), as.integer (funcidx),
-           as.integer (count), as.integer (msgtag),
-           as.character (group), as.integer (rootginst))
 }
 
 ### Message buffers
 .PVM.initsend <- function (encode = c("Default", "Raw", "InPlace")) {
     encode <- .PVM.encoding[match.arg (encode)]
-    .Call ("rpvm_initsend", as.integer(encode))
+    .Call ("rpvm_initsend", as.integer(encode), PACKAGE = "rpvm")
 }
 
 .PVM.mkbuf <- function (encode = c("Default", "Raw", "InPlace")) {
     encode <- .PVM.encoding[match.arg (encode)]
-    .Call ("rpvm_mkbuf", as.integer (encode))
+    .Call ("rpvm_mkbuf", as.integer (encode), PACKAGE = "rpvm")
 }
 
 .PVM.freebuf <- function (bufid) {
-    info <- .Call ("rpvm_freebuf", as.integer (bufid))
+    info <- .Call ("rpvm_freebuf", as.integer (bufid), PACKAGE = "rpvm")
     return (invisible (info))
 }
 
 .PVM.getsbuf <- function () {
-    .Call ("rpvm_getsbuf")
+    .Call ("rpvm_getsbuf", PACKAGE = "rpvm")
 }
 
 .PVM.getrbuf <- function () {
-    .Call ("rpvm_getsbuf")
+    .Call ("rpvm_getsbuf", PACKAGE = "rpvm")
 }
 
 .PVM.setsbuf <- function (bufid) {
-    .Call ("rpvm_setsbuf", as.integer (bufid))
+    .Call ("rpvm_setsbuf", as.integer (bufid), PACKAGE = "rpvm")
 }
 
 .PVM.setrbuf <- function (bufid) {
-    .Call ("rpvm_setrbuf", as.integer (bufid))
+    .Call ("rpvm_setrbuf", as.integer (bufid), PACKAGE = "rpvm")
 }
 ###
 
 ### Packing data
 .PVM.pkdouble <- function (data = 0.0, stride = 1) {
-    info <- .Call ("rpvm_pkdouble", as.double (data), as.integer (stride))
+    info <- .Call ("rpvm_pkdouble", as.double (data), as.integer (stride),
+                   PACKAGE = "rpvm")
     return (invisible (info))
 }
 
 .PVM.pkint <- function (data = 0, stride = 1) {
-    info <- .Call ("rpvm_pkint", as.integer (data), as.integer (stride))
+    info <- .Call ("rpvm_pkint", as.integer (data), as.integer (stride),
+                   PACKAGE = "rpvm")
     return (invisible (info))
 }
 
@@ -310,33 +291,33 @@ PVM.options <- function (what, val) {
         warning ("Only the first element is packed.\n")
         data <- data[1]
     }
-    info <- .Call ("rpvm_pkstr", as.character (data))
+    info <- .Call ("rpvm_pkstr", as.character (data), PACKAGE = "rpvm")
     return (invisible (info))
 }
 
 .PVM.pkintvec <- function (data) {
-    info <- .Call ("rpvm_pkintvec", as.integer (data))
+    info <- .Call ("rpvm_pkintvec", as.integer (data), PACKAGE = "rpvm")
     return (invisible (info))
 }
 
 .PVM.pkdblvec <- function (data) {
-    info <- .Call ("rpvm_pkdblvec", as.double (data))
+    info <- .Call ("rpvm_pkdblvec", as.double (data), PACKAGE = "rpvm")
     return (invisible (info))
 }
 
 .PVM.pkstrvec <- function (data) {
     .PVM.pkint (max (nchar (data)) + 10)
-    .Call ("rpvm_pkstrvec", as.character (data))
+    .Call ("rpvm_pkstrvec", as.character (data), PACKAGE = "rpvm")
 }
 .PVM.pkintmat <- function (data) {
     storage.mode (data) <- "integer"
-    info <- .Call ("rpvm_pkintmat", as.matrix (data))
+    info <- .Call ("rpvm_pkintmat", as.matrix (data), PACKAGE = "rpvm")
     return (invisible (info))
 }
 
 .PVM.pkdblmat <- function (data) {
     storage.mode (data) <- "double"
-    info <- .Call ("rpvm_pkdblmat", as.matrix (data))
+    info <- .Call ("rpvm_pkdblmat", as.matrix (data), PACKAGE = "rpvm")
     return (invisible (info))
 }
 
@@ -361,31 +342,33 @@ PVM.options <- function (what, val) {
 
 ### Unpacking data
 .PVM.upkdouble <- function (nitem  = 1, stride = 1)
-    .Call ("rpvm_upkdouble", as.integer (nitem), as.integer (stride))
+    .Call ("rpvm_upkdouble", as.integer (nitem), as.integer (stride),
+           PACKAGE = "rpvm")
 
 .PVM.upkint <- function (nitem = 1, stride = 1)
-    .Call ("rpvm_upkint", as.integer (nitem), as.integer (stride))
+    .Call ("rpvm_upkint", as.integer (nitem), as.integer (stride),
+           PACKAGE = "rpvm")
 
-.PVM.upkstr <- function (maxlen) {
-    .Call ("rpvm_upkstr", as.integer (maxlen))
+.PVM.upkstr <- function (maxlen = 200) {
+    .Call ("rpvm_upkstr", as.integer (maxlen), PACKAGE = "rpvm")
 }
 
 .PVM.upkintvec <- function ()
-    .Call ("rpvm_upkintvec")
+    .Call ("rpvm_upkintvec", PACKAGE = "rpvm")
 
 .PVM.upkdblvec <- function ()
-    .Call ("rpvm_upkdblvec")
+    .Call ("rpvm_upkdblvec", PACKAGE = "rpvm")
 
 .PVM.upkstrvec <- function () {
     maxlen <- .PVM.upkint ()
-    .Call ("rpvm_upkstrvec", as.integer (maxlen))
+    .Call ("rpvm_upkstrvec", as.integer (maxlen), PACKAGE = "rpvm")
 }
     
 .PVM.upkintmat <- function ()
-    .Call ("rpvm_upkintmat")
+    .Call ("rpvm_upkintmat", PACKAGE = "rpvm")
 
 .PVM.upkdblmat <- function ()
-    .Call ("rpvm_upkdblmat")
+    .Call ("rpvm_upkdblmat", PACKAGE = "rpvm")
 
 .PVM.upkstrmat <- function () {
     nr <- .PVM.upkint ()
@@ -404,35 +387,41 @@ PVM.options <- function (what, val) {
 
 ###  Sending and receving data
 .PVM.send <- function (tid, msgtag)
-    .Call ("rpvm_send", as.integer(tid), as.integer(msgtag))
+    .Call ("rpvm_send", as.integer(tid), as.integer(msgtag),
+           PACKAGE = "rpvm")
 
 .PVM.mcast <- function (tids, msgtag) {
     if (msgtag < 0) stop ("Message tag must be >= 0!")
-    info <- .Call ("rpvm_mcast", as.integer(tids), as.integer(msgtag))
+    info <- .Call ("rpvm_mcast", as.integer(tids), as.integer(msgtag),
+                   PACKAGE = "rpvm")
     return (invisible (info))
 }
 
 .PVM.recv <- function (tid = -1, msgtag = -1)
-    .Call ("rpvm_recv", as.integer (tid), as.integer (msgtag))
+    .Call ("rpvm_recv", as.integer (tid), as.integer (msgtag),
+           PACKAGE = "rpvm")
 
 .PVM.trecv <- function (tid = -1, msgtag = -1, sec = 0, usec = 0) {
     .Call ("rpvm_trecv", as.integer (tid), as.integer (msgtag),
-           as.double (c(sec, usec)))
+           as.double (c(sec, usec)), PACKAGE = "rpvm")
 }
 
 .PVM.nrecv <- function (tid = -1, msgtag = -1)
-    .Call ("rpvm_nrecv", as.integer(tid), as.integer(msgtag))
+    .Call ("rpvm_nrecv", as.integer(tid), as.integer(msgtag),
+           PACKAGE = "rpvm")
 
 .PVM.probe <- function (tid = -1, msgtag = -1) {
-    .Call ("rpvm_probe", as.integer(tid), as.integer(msgtag))    
+    .Call ("rpvm_probe", as.integer(tid), as.integer(msgtag),
+           PACKAGE = "rpvm")    
 }
 
 .PVM.bufinfo <- function (bufid) {
-    bufinfo <- .Call ("rpvm_bufinfo", as.integer(bufid))
-    if (bufinfo == -1) {
+    bufinfo <- .Call ("rpvm_bufinfo", as.integer(bufid), PACKAGE = "rpvm")
+    if (length (bufinfo) == 1 && bufinfo == -1) {
         return (-1);
     } else {
-        return (bytes = bufinfo[1], msgtag = bufinfo[2], tid = bufinfo[3])
+        return (list (bytes = bufinfo[1], msgtag = bufinfo[2],
+                      tid = bufinfo[3]))
     }
 }
     
@@ -600,7 +589,20 @@ init.sprng.group <- function (group,
 
 ## (Un)Serialization of R objects (by  Luke Tierney <luke@stat.umn.edu>)
 .PVM.serialize <- function(object, refhook = NULL)
-    .Call("rpvm_pksexp", object, refhook)
+    .Call("rpvm_pksexp", object, refhook, PACKAGE = "rpvm")
 
 .PVM.unserialize <- function(refhook = NULL)
-    .Call("rpvm_upksexp", refhook)
+    .Call("rpvm_upksexp", refhook, PACKAGE = "rpvm")
+
+## (Un)Serialization using the serialize package
+.PVM.serialize <- function (object, refhook = NULL) {
+    require (serialize)
+    str <- serialize (object, NULL, TRUE, refhook)
+    .PVM.pkstr (str)
+    return (invisible (str))
+}
+.PVM.unserialize <- function (refhook = NULL) {
+    require (serialize)
+    str <- .PVM.upkstr ()
+    unserialize (str, refhook)
+}

@@ -1,6 +1,3 @@
-Demos for the rpvm package:
-
-Front ends for C/Fortran PVM slaves
-    
-1. forkjoin.R
-2. hello.R
+hello               C PVM Example. 
+helloR              R PVM Example.
+forkjoin            Another PVM R Example.

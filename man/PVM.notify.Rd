@@ -6,7 +6,7 @@
 }
 \usage{
 .PVM.notify (msgtag, what = c("ExitTask", "DeleteHost", "AddHost"),
-             par = -1)
+             par = 0)
 }
 \arguments{
   \item{msgtag}{message tag to be used in notification}
@@ -57,7 +57,7 @@
 \dontrun{.PVM.notify (msgtag = 999, what = "Exit", tids)}
 }
 \author{
-  Na (Michael) Li \email{lina@u.washington.edu} and
+  Na (Michael) Li \email{nali@umn.edu} and
   A.J. Rossini \email{rossini@u.washington.edu}
 }
 \keyword{utilities}

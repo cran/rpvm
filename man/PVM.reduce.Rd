@@ -1,19 +1,12 @@
 \name{PVM.reduce}
 \alias{.PVM.reduce}
-\alias{.PVM.reduce.default}
-\alias{.PVM.reduce.integer}
-\alias{.PVM.reduce.double}
 \title{Reduction}
 \description{
   Performs a reduction operation over members of the specified group.  
 }
 \usage{
-.PVM.reduce (x, ...)
-.PVM.reduce.default (x, ...)
-.PVM.reduce.integer (x, func = "Min", count = length (x), msgtag, group,
-rootginst = 0)
-.PVM.reduce.double (x, func = "Min", count = length (x), msgtag, group,
- rootginst = 0)
+.PVM.reduce (x, func = "Min", count = length (x), msgtag, group,
+             rootginst = 0)
 }
 \arguments{
   \item{x}{an integer or double vector of length at least \code{count}}
@@ -26,7 +19,6 @@ rootginst = 0)
   \item{group}{a character string naming the group}
   \item{rootginst}{an integer instance number of group member who
     performs the reduce of its array to the members of the group.}
-  \item{...}{arguments passed to the corresponding methods}
 }
 \value{
   On the root, a vector of length \code{count}.
@@ -66,18 +58,23 @@ rootginst = 0)
   tasks for other purposes).
 }
 \references{
-  PVM documentation
+  PVM documentation, http://www.netlib.org/pvm3/book/pvm-book.html
 }
 \seealso{
-  \code{\link{.PVM.joingroup}}
+  \code{\link{.PVM.joingroup}}, \code{\link{.PVM.gather}},
+  \code{\link{.PVM.scatter}}
 }
 \examples{
 gname <- "pvmtest"
-\dontrun{if (myinum == 0) result <- .PVM.reduce (as.double (rnorm (10)),
-"Sum", msgtag = 11, group = gname, root = 0)}
+\dontrun{
+if (myinum == 0) {
+   result <- .PVM.reduce (as.double (rnorm (10)),
+                          "Sum", msgtag = 11, group = gname, root = 0)
+}
+}
 }
 \author{
-  Na (Michael) Li \email{lina@u.washington.edu} and
+  Na (Michael) Li \email{nali@umn.edu} and
   A.J. Rossini \email{rossini@u.washington.edu}
 }
 \keyword{utilities}

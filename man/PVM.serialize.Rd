@@ -6,8 +6,8 @@
   Serialize to/from the current active send/receive buffer.
 }
 \usage{
-.PVM.serialize (object, refhook = 1)
-.PVM.unserialize(refhook = 1)
+.PVM.serialize (object, refhook = NULL)
+.PVM.unserialize(refhook = NULL)
 }
 \arguments{
   \item{object}{object to serialize.}

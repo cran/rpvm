@@ -1,5 +1,5 @@
 /*
- * $Id: utils.c,v 1.2 2002/03/18 23:47:38 snake Exp $
+ * $Id: utils.c,v 1.3 2002/10/24 04:30:28 nali Exp $
  */
 
 #include "utils.h"
@@ -26,15 +26,18 @@ SEXP mkReal (double x)
 }
 
 /**
- * Convert an SEXP string vector to a (char **).
+ * Convert an SEXP string vector to a (char **), ending with a null string.
  */
 char **toPPChar (SEXP sexp_str)
 {
-    /* Note: it is the user's responsiblity to ensure sexp_str is
-     * indeed a vector of strings */
     char **ppchar;
     int  i;
     int  len = LENGTH (sexp_str);
+
+    if (!isString (sexp_str)) {
+        error ("argument is not a character vector");
+    }
+
     /* Temporary memory will be released after exiting .Call */
     ppchar = (char **) R_alloc (len + 1, sizeof (char *));
     for (i = 0; i < len; ++i) {

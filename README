@@ -1,6 +1,6 @@
 "rpvm" is an R package providing interface to PVM (Parallel Virtual Machine).
 
-Copywright (2001) Na (Michael) Li <lina@u.washington.edu> and 
+Copywright (2001) Na (Michael) Li <nali@umn.edu> and 
 A. J. Rossini <rossini@u.washington.edu>.
 
 =============================================================================
@@ -51,12 +51,14 @@ INSTALLATION:
     If PVM_ROOT is not set, the configure script will try to look for
     first /usr/lib/pvm3/ then $HOME/pvm3/ and stop if none exists.
 
-3.  Optional.
+3.  Install slaveR.sh
 
-    Set environment variables RSLAVEDIR (where to find R slave script, default
-    $R_LIBS/rpvm) and RSLAVEOUT (where to put output from R slave process, 
-    defalut $TMPDIR).  They can also be specified as option when calling the 
-    spawning function.
+    You need copy the script 'slaveR.sh' (under $R_LIBS/rpvm) to somewhere
+    pvmd can find on each host.  The easiest way is:
+
+    cp $R_LIBS/rpvm/slaveR.sh $PVM_ROOT/bin/$PVM_ARCH
+
+4.  Try run 'demo (helloR)' in R.
 
 =============================================================================
 TEST:

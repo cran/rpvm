@@ -20,43 +20,34 @@
 
 echo $1 $2 $3
 
-if [ $# -lt 1 ]; then
-    echo "There has to be at least one argument!"
+logfile=/tmp/rpvm.$$.log
+
+if [ $# -lt 3 ]; then
+    echo "There has to be three arguments!" >> $logfile
     exit 1
 fi
 
-# base=${1%.R}
-base=`basename $1`
-infile=$base.R
+infile=$1
+base=`basename $infile .R`
 outfile=$base.$$.Rout
 
-## Full path to input file
-if [ -n "$2" ]; then    
-    RSLAVEDIR=$2                         # Specified as the second argument
-fi
-
-## Full path to output file
-if [ -n "$3" ]; then   
-    RSLAVEOUT=$3                         # Specified as the third argument
-fi
-
-JOB=${RSLAVEDIR:=$R_LIBS/rpvm}/$infile
-OUT=${RSLAVEOUT:=$TMPDIR}/$outfile
-
-## Test if the infile exists and readable
-if [ ! -r $JOB ];  then
-    echo "$JOB does not exist or is not readable!"
-    exit 1
-fi
-
-## Test if the outdir is a directory and writable
-if [ ! -d $RSLAVEOUT -o ! -w $RSLAVEOUT ]; then
-    echo "$RSLAVEOUT is not a diretory or is not writable!"
-    exit 1
-fi
-
-echo $JOB
-echo $OUT
+## Directory of input file (relative to rpvm installation) supplied as the
+## second argument
+indir=$2
+echo "input file is $indir/$infile"
+OUT=$3/$outfile
+echo "output file is $OUT" >> $logfile
 
 ### It is assumed that R is in the search path
-R BATCH $JOB $OUT
+${RPROG:-R} --vanilla <<EOF > $OUT 2>> $logfile
+
+library(rpvm)
+
+infile <- file.path (system.file (package = "rpvm"), "$indir", "$infile")
+if (!file.exists (infile)) {
+    cat ("Cannot find ", infile, "\n", file = "$OUT")
+} else {
+    source (infile)
+}
+.PVM.exit()
+EOF

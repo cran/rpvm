@@ -46,7 +46,7 @@ fi
 echo "PVM_ARCH is ${PVM_ARCH}"
 
 AC_CHECK_HEADER(pvm3.h,PVM_INCLUDE="",
-[    echo "Try to find pvm3.h ..."
+[   echo "Try to find pvm3.h ..."
     if test -f /usr/local/include/pvm3.h; then
         echo "Found in /usr/local/include"
         PVM_INCLUDE="-I/usr/local/include"
@@ -60,7 +60,7 @@ AC_CHECK_HEADER(pvm3.h,PVM_INCLUDE="",
 )
 
 AC_CHECK_LIB(pvm3,main,PVM_LIBS="",
-[    echo "Try to find libpvm3 ..."
+[   echo "Try to find libpvm3 ..."
     if test -f /usr/local/lib/libpvm3.a; then
         echo "Found in /usr/local/lib"
         PVM_LIBS="-L/usr/local/lib"
@@ -87,22 +87,19 @@ AC_CHECK_LIB(gpvm3,main,PVM_LIBS="",
     fi  ]
 )
 
-AC_PATH_PROG(PVMD,pvmd,
-[   echo "Cannot find pvmd executable"
+AC_PATH_PROG([PVMD], [pvmd], [""], [$PATH $PVM_ROOT/lib])
+if test -z "$PVMD"; then
+    echo "Cannot find pvmd executable"
     echo "Include it in your path or check your pvm installation."
-    exit 1  ]
-)
+    exit 1
+fi
 
-AC_PATH_PROG(PVMGSPATH,pvmgs,
-[   if test -f ${PVM_ROOT}/bin/${PVM_ARCH}/pvmgs; then
-
-        echo "Found in ${PVM_ROOT}/bin/${PVM_ARCH}"
-    else 
-        echo "Cannot find pvmgs executable"
-        echo "Include it in your path or check your pvm installation."
-        exit 1
-    fi  ]
-)
+AC_PATH_PROG([PVMGSPATH], [pvmgs], [""], [$PATH $PVM_ROOT/bin/$PVM_ARCH])
+if test -z "$PVMGSPATH"; then
+    echo "Cannot find pvmgs executable"
+    echo "Include it in your path or check your pvm installation."
+    exit 1
+fi
 
 PKG_LIBS="${PVM_LIBS} -lpvm3 -lgpvm3"
 PKG_CPPFLAGS="${PVM_INCLUDE}"

@@ -63,7 +63,7 @@ init.sprng.group  (group, rootinst = 0, seed = 0,
 \dontrun{oldrng <- init.sprng.group ("mygroup", root = 0, seed = 1231)}
 }
 \author{
-  Na (Michael) Li \email{lina@u.washington.edu} and
+  Na (Michael) Li \email{nali@umn.edu} and
   A.J. Rossini \email{rossini@u.washington.edu}
 }
 \keyword{interface}

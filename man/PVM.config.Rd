@@ -14,9 +14,6 @@
   Returns the configuration information as a data frame, including each
   host's pvmd task id, name, architecture and relative speed.  One row
   per host.
-
-  Returns NA if the pvmd hasn't been started (there will be some warning
-  messages).
 }
 \details{
   \code{.PVM.config} returns information about the present virtual
@@ -27,10 +24,10 @@
   PVM documentation
 }
 \examples{
-\dontrun{.PVM.config ()}
+try (.PVM.config ())
 }
 \author{
-  Na (Michael) Li \email{lina@u.washington.edu} and
+  Na (Michael) Li \email{nali@umn.edu} and
   A.J. Rossini \email{rossini@u.washington.edu}
 }
 \keyword{utilities}

@@ -1,8 +1,5 @@
 \name{PVM.gather}
 \alias{.PVM.gather}
-\alias{.PVM.gather.default}
-\alias{.PVM.gather.integer}
-\alias{.PVM.gather.double}
 \title{Gather the data into root}
 \description{
   A specified member of the group (the root) receives mes sages from
@@ -10,10 +7,8 @@
   array.
 }
 \usage{
-.PVM.gather (x, ...)
-.PVM.gather.default (x, ...)
-.PVM.gather.integer (x, count = length (x), msgtag, group, rootginst = 0)
-.PVM.gather.double (x, count = length (x), msgtag, group, rootginst = 0)
+.PVM.gather (x, count = length (x),
+             msgtag, group, rootginst = 0)
 }
 \arguments{
   \item{x}{an integer or double vector of length at least \code{count}}
@@ -22,7 +17,6 @@
   \item{group}{a character string naming the group}
   \item{rootginst}{an integer instance number of group member who
     performs the gather of its array to the members of the group.}
-  \item{...}{arguments passed to the corresponding methods}
 }
 \value{
   On the root, a vector combining all the \code{x}'s.
@@ -45,15 +39,20 @@
   PVM documentation
 }
 \seealso{
-  \code{\link{.PVM.joingroup}}
+  \code{\link{.PVM.joingroup}}, \code{\link{.PVM.reduce}},
+  \code{\link{.PVM.scatter}}
 }
 \examples{
 gname <- "pvmtest"
-\dontrun{if (myinum == 0) result <- .PVM.gather(as.integer (1:100),
-msgtag = 11, group = gname, root = 0)}
+\dontrun{
+if (myinum == 0) {
+   result <- .PVM.gather(as.integer (1:100),
+                         msgtag = 11, group = gname, root = 0)
+}
+}
 }
 \author{
-  Na (Michael) Li \email{lina@u.washington.edu} and
+  Na (Michael) Li \email{nali@umn.edu} and
   A.J. Rossini \email{rossini@u.washington.edu}
 }
 \keyword{utilities}

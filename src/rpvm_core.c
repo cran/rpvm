@@ -1,5 +1,5 @@
 /*
- * $Id: rpvm_core.c,v 1.18 2002/01/30 21:53:16 snake Exp $
+ * $Id: rpvm_core.c,v 1.21 2004/03/12 23:11:52 nali Exp $
  */
 
 #include "utils.h"
@@ -7,108 +7,108 @@
 
 int rpvm_chkerror (int error_code, int exit_pvm)
 {
-    if (error_code < 0) {
-        switch (error_code) {
-            case PvmBadParam :
-                error ("PVM: invalid parameter");
-                break;
-            case PvmMismatch :
-                error ("PVM: barrier count mismatch");
-                break;
-            case PvmNoData :
-                error ("PVM: read past end of buffer");
-                break;
-            case PvmNoHost :
-                error ("PVM: no such host");
-                break;
-            case PvmNoFile :
-                error ("PVM: no such executable");
-                break;
-            case PvmNoMem :
-                error ("PVM: can't get memory");
-                break;
-            case PvmBadMsg :
-                error ("PVM: can't decode received message");
-                break;
-            case PvmSysErr :
-                error ("PVM: pvmd not responding");
-                break;
-            case PvmNoBuf :
-                error ("PVM: no current buffer");
-                break;
-            case PvmNoSuchBuf :
-                error ("PVM: bad message id");
-                break;
-            case PvmNullGroup :
-                error ("PVM: null group name");
-                break;
-            case PvmDupGroup :
-                error ("PVM: already in group");
-                break;
-            case PvmNoGroup :
-                error ("PVM: no such group");
-                break;
-            case PvmNotInGroup :
-                error ("PVM: not in group");
-                break;
-            case PvmNoInst :
-                error ("PVM: no such instance in group");
-                break;
-            case PvmHostFail :
-                error ("PVM: host failed");
-                break;
-            case PvmNoParent :
-                error ("PVM: no parent task");
-                break;
-            case PvmNotImpl :
-                error ("PVM: function not implemented");
-                break;
-            case PvmDSysErr :
-                error ("PVM: pvmd system error");
-                break;
-            case PvmBadVersion :
-                error ("PVM: pvmd-pvmd protocol mismatch");
-                break;
-            case PvmOutOfRes :
-                error ("PVM: out of resources");
-                break;
-            case PvmDupHost :
-                error ("PVM: host already configured");
-                break;
-            case PvmCantStart :
-                error ("PVM: failed to exec new slave pvmd");
-                break;
-            case PvmAlready :
-                error ("PVM: already doing operation");
-                break;
-            case PvmNoTask :
-                error ("PVM: no such task");
-                break;
-            case PvmDenied :
-                error ("PVM: operation denied");
-                break;
-            case PvmExists :  /* replaced PvmDupEntry */
-                error ("PVM: already an entry matching insert request");
-                break;
-            case PvmNotFound :  /* replaceed PvmNoEntry */
-                error ("PVM: no entry matching the lookup request");
-                break;
-            case PvmOverflow :
-                error ("PVM: value too large to be packed or unpacked");
-                break;
-            default:
-                error ("PVM: unkown error");
-                break;
-        }
-        /* Exit pvmd (necessary for all errors??) */
-        if (exit_pvm) {
-            pvm_exit ();
-        }
-        return -1;
-    } else {
+    if (error_code >= 0) {
         /* Not an error, return intact */
         return error_code;
     }
+
+    switch (error_code) {
+    case PvmBadParam :
+        error ("PVM: invalid parameter");
+        break;
+    case PvmMismatch :
+        error ("PVM: barrier count mismatch");
+        break;
+    case PvmNoData :
+        error ("PVM: read past end of buffer");
+        break;
+    case PvmNoHost :
+        error ("PVM: no such host");
+        break;
+    case PvmNoFile :
+        error ("PVM: no such executable");
+        break;
+    case PvmNoMem :
+        error ("PVM: can't get memory");
+        break;
+    case PvmBadMsg :
+        error ("PVM: can't decode received message");
+        break;
+    case PvmSysErr :
+        error ("PVM: pvmd not responding");
+        break;
+    case PvmNoBuf :
+        error ("PVM: no current buffer");
+        break;
+    case PvmNoSuchBuf :
+        error ("PVM: bad message id");
+        break;
+    case PvmNullGroup :
+        error ("PVM: null group name");
+        break;
+    case PvmDupGroup :
+        error ("PVM: already in group");
+        break;
+    case PvmNoGroup :
+        error ("PVM: no such group");
+        break;
+    case PvmNotInGroup :
+        error ("PVM: not in group");
+        break;
+    case PvmNoInst :
+        error ("PVM: no such instance in group");
+        break;
+    case PvmHostFail :
+        error ("PVM: host failed");
+        break;
+    case PvmNoParent :
+        error ("PVM: no parent task");
+        break;
+    case PvmNotImpl :
+        error ("PVM: function not implemented");
+        break;
+    case PvmDSysErr :
+        error ("PVM: pvmd system error");
+        break;
+    case PvmBadVersion :
+        error ("PVM: pvmd-pvmd protocol mismatch");
+        break;
+    case PvmOutOfRes :
+        error ("PVM: out of resources");
+        break;
+    case PvmDupHost :
+        error ("PVM: host already configured");
+        break;
+    case PvmCantStart :
+        error ("PVM: failed to exec new slave pvmd");
+        break;
+    case PvmAlready :
+        error ("PVM: already doing operation");
+        break;
+    case PvmNoTask :
+        error ("PVM: no such task");
+        break;
+    case PvmDenied :
+        error ("PVM: operation denied");
+        break;
+    case PvmExists :  /* replaced PvmDupEntry */
+        error ("PVM: already an entry matching insert request");
+        break;
+    case PvmNotFound :  /* replaceed PvmNoEntry */
+        error ("PVM: no entry matching the lookup request");
+        break;
+    case PvmOverflow :
+        error ("PVM: value too large to be packed or unpacked");
+        break;
+    default:
+        error ("PVM: unkown error");
+        break;
+    }
+    /* Exit pvmd (necessary for all errors??) */
+    if (exit_pvm) {
+        pvm_exit ();
+    }
+    return error_code;
 }
 
 /* Process control */
@@ -228,15 +228,24 @@ SEXP rpvm_spawn (SEXP sexp_task,
                  SEXP sexp_ntask,
                  SEXP sexp_flag,
                  SEXP sexp_where,
-                 SEXP sexp_arglist)
+                 SEXP sexp_arglist,
+                 SEXP sexp_verbose)
 {
     int numt;
     int ntask = INTEGER (sexp_ntask)[0];
     int flag  = INTEGER (sexp_flag)[0];
-
+    int verbose = INTEGER (sexp_verbose)[0];
     char **arglist = toPPChar (sexp_arglist);
-
+    int i = 0;
     SEXP sexp_tids;
+
+    if (verbose) {
+        /* printing arglist */
+        Rprintf ("Arglist is: \n");
+        for (i = 0; arglist[i]; ++i) {
+            Rprintf ("     %d -> %s\n", i, arglist[i]);
+        }
+    }
 
     PROTECT (sexp_tids  = allocVector (INTSXP, ntask));
     /* spawn tasks */
@@ -246,15 +255,17 @@ SEXP rpvm_spawn (SEXP sexp_task,
                       CHAR (STRING_ELT (sexp_where, 0)),
                       ntask,
                       INTEGER (sexp_tids));
-    if (numt < 0) {
-        UNPROTECT (1);
-        return mkInt (rpvm_chkerror (numt, 1));
-    } else if (numt < ntask) {
+    UNPROTECT (1);
+    rpvm_chkerror (numt, 1);
+
+    if (numt < ntask) {
         Rprintf ("Requested spawning %d tasks, %d successful.\n",
                  ntask, numt);
+        for (i = 0; i < ntask; ++i) {
+            Rprintf ("Tids[%d] = %d\n", i, INTEGER (sexp_tids)[i]);
+            rpvm_chkerror (INTEGER (sexp_tids)[i], 1);
+        }
     }
-
-    UNPROTECT (1);
     return sexp_tids;
 }
 
@@ -690,12 +701,7 @@ SEXP rpvm_config ()
     int i;
 
     info = pvm_config (&nhost, &narch, &hostp);
-
-    if (info == PvmSysErr) {
-        return mkInt (NA_INTEGER);
-    }
     rpvm_chkerror (info, 0);
-    /* Rprintf ("There are %d hosts and %d architectures.\n", nhost, narch); */
 
     PROTECT (sexp_tid   = allocVector (INTSXP, nhost));
     PROTECT (sexp_name  = allocVector (STRSXP, nhost));
@@ -1111,3 +1117,135 @@ SEXP rpvm_notify (SEXP sexp_what, SEXP sexp_msgtag, SEXP sexp_tids)
                                              LENGTH (sexp_tids),
                                              INTEGER (sexp_tids)), 1));
 }
+
+SEXP rpvm_unnotify (SEXP sexp_what, SEXP sexp_msgtag, SEXP sexp_tids)
+{
+    return mkInt (rpvm_chkerror (pvm_notify (
+                                     INTEGER (sexp_what)[0] | PvmNotifyCancel,
+                                     INTEGER (sexp_msgtag)[0],
+                                     LENGTH (sexp_tids),
+                                     INTEGER (sexp_tids)), 1));
+}
+
+/* context management */
+
+SEXP rpvm_newcontext ()
+{
+    return mkInt (pvm_newcontext ());
+}
+
+SEXP rpvm_setcontext (SEXP sexp_ctx)
+{
+    return mkInt (pvm_setcontext (INTEGER (sexp_ctx)[0]));
+}
+
+SEXP rpvm_freecontext (SEXP sexp_ctx)
+{
+    int info = pvm_freecontext (INTEGER (sexp_ctx)[0]);
+    rpvm_chkerror (info, 0);
+    return R_NilValue;
+}
+
+SEXP rpvm_getcontext ()
+{
+    int info = pvm_getcontext ();
+    return mkInt (rpvm_chkerror (info, 1));
+}
+
+/* packing a message inside another message */
+
+SEXP rpvm_pkmesg (SEXP sexp_bufid)
+{
+    int info = pvm_pkmesg (INTEGER (sexp_bufid)[0]);
+    return mkInt (rpvm_chkerror (info, 1));
+}
+
+SEXP rpvm_upkmesg ()
+{
+    int newbufid = pvm_upkmesg ();
+    return mkInt (rpvm_chkerror (newbufid, 1));
+}
+
+SEXP rpvm_pkmesgbody (SEXP sexp_bufid)
+{
+    int info = pvm_pkmesgbody (INTEGER (sexp_bufid)[0]);
+    return mkInt (rpvm_chkerror (info, 1));
+}
+
+/* global mail box */
+
+SEXP rpvm_putinfo (SEXP sexp_name, SEXP sexp_bufid, SEXP sexp_flags)
+{
+    int bufid = INTEGER (sexp_bufid)[0];
+    int flags  = INTEGER (sexp_flags)[0];
+    char *name = CHAR (STRING_ELT (sexp_name, 0));
+    int index = pvm_putinfo (name, bufid, flags);
+    return mkInt (rpvm_chkerror (index, 1));
+}
+
+SEXP rpvm_recvinfo (SEXP sexp_name, SEXP sexp_index, SEXP sexp_flags)
+{
+    int index = INTEGER (sexp_index)[0];
+    int flags  = INTEGER (sexp_flags)[0];
+    char *name = CHAR (STRING_ELT (sexp_name, 0));
+    int bufid = pvm_recvinfo (name, index, flags);
+    return mkInt (rpvm_chkerror (bufid, 1));
+}
+
+SEXP rpvm_delinfo (SEXP sexp_name, SEXP sexp_index, SEXP sexp_flags)
+{
+    int index = INTEGER (sexp_index)[0];
+    int flags  = INTEGER (sexp_flags)[0];
+    char *name = CHAR (STRING_ELT (sexp_name, 0));
+    int info = pvm_delinfo (name, index, flags);
+}
+
+SEXP rpvm_getmboxinfo (SEXP sexp_pattern, SEXP sexp_classes)
+{
+    char *pattern = CHAR (STRING_ELT (sexp_pattern, 0));
+    int nclasses = LENGTH (sexp_classes);
+}
+
+/* Message Handling */
+/* A sample message hander, mid is the bufid of the received message */
+int rpvm_hostadded( int mid )
+{
+    int n;
+    pvm_unpackf ("%d", &n);
+    Rprintf ( "*** %d new hosts just added ***\n", n );
+    return 0;
+}
+
+SEXP rpvm_notify_hostadded( )
+{
+    int tag = 99;
+    int mhid = pvm_addmhf (-1, tag, -1, rpvm_hostadded );
+    int info = pvm_notify (PvmHostAdd, tag, -1, 0);
+    /* return Message handler id */
+    return mkInt (mhid);
+}
+
+SEXP rpvm_unnotify_hostadded( SEXP s_mhid )
+{
+    int tag = 99;
+    int info = pvm_delmhf (INTEGER(s_mhid)[0]);
+    info = pvm_notify (PvmHostAdd | PvmNotifyCancel, tag, -1, 0);
+    return R_NilValue;
+}
+
+
+/* functions not yet implemented and may never be */
+/*
+ * pvm_addmhf, pvm_delmhf
+ * pvm_freezegroup
+ * pvm_gettmask,  pvm_settmask
+ * pvm_reg_hoster, pvm_reg_rm, pvm_reg_tasker, pvm_reg_tracer
+ * pvm_getfds
+ * pvm_archcode
+ * pvm_catchout
+ * pvm_export,  pvm_unexport
+ * pvm_hostsync
+ * pvm_sendsig
+ * pvm_siblings
+ * pvm_getnoresets
+ */

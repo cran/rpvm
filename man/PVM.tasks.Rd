@@ -40,10 +40,12 @@
   \code{\link{.PVM.config}}, \code{\link{.PVM.tidtohost}}
 }
 \examples{
-\dontrun{.PVM.tasks ()}
+\dontrun{
+.PVM.tasks ()
+}
 }
 \author{
-  Na (Michael) Li \email{lina@u.washington.edu} and
+  Na (Michael) Li \email{nali@umn.edu} and
   A.J. Rossini \email{rossini@u.washington.edu}
 }
 \keyword{utilities}
