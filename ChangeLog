@@ -1,0 +1,14 @@
+
+2001-09-03: Na (Michael) Li <lina@u.washington.edu> 
+
+    * Version 0.2.1 released.
+
+    * Cleaned up documentation.  Added README for installation instruction.
+
+    * Added configure script.
+
+    * Added ./tests directory and move hello.R from demo/ to tests/.
+
+2001-09-01: Na (Michael) Li <lina@u.washington.edu> 
+
+    * Version 0.2 released.

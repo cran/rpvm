@@ -1,0 +1,8 @@
+# -*- Makefile -*-  vim : ft = make
+
+include @PVM_ROOT@/conf/@PVM_ARCH@.def
+
+# PVM library and header files
+PKG_CPPFLAGS = @PKG_CPPFLAGS@ 
+PKK_CFLAGS   = $(ARCHCFLAGS)
+PKG_LIBS     = @PKG_LIBS@ $(ARCHLIB)

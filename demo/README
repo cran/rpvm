@@ -1,0 +1,15 @@
+Demos for the rpvm package:
+
+1. Front ends for C/Fortran PVM slaves
+
+	forkjoin.R :
+	hello.R    : 
+
+2. R as front end (initial node) and computing/slave node
+
+	pvm_test.R
+
+Notes:
+
+Under Debian, objects to be spawned should be in ~/pvm3/bin/LINUX.  In
+particular, the executables need to be located there.
