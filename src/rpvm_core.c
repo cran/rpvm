@@ -5,6 +5,9 @@
 #include "utils.h"
 #include "pvm3.h"
 
+#define RPVM_TASK_COMPLETE_MSG 1000
+#define RPVM_TASK_EXIT_MSG     1001
+
 int rpvm_chkerror (int error_code, int exit_pvm)
 {
     if (error_code >= 0) {
@@ -1113,10 +1116,18 @@ SEXP rpvm_tidtohost (SEXP sexp_tid)
 
 SEXP rpvm_notify (SEXP sexp_what, SEXP sexp_msgtag, SEXP sexp_tids)
 {
-    return mkInt (rpvm_chkerror (pvm_notify (INTEGER (sexp_what)[0],
-                                             INTEGER (sexp_msgtag)[0],
-                                             LENGTH (sexp_tids),
-                                             INTEGER (sexp_tids)), 1));
+    return mkInt (rpvm_chkerror (pvm_notify (INTEGER(sexp_what)[0],
+                                             INTEGER(sexp_msgtag)[0],
+                                             LENGTH(sexp_tids),
+                                             INTEGER(sexp_tids)), 1));
+}
+
+SEXP rpvm_notify_task_exit( SEXP sexp_tids )
+{
+    return mkInt (rpvm_chkerror (pvm_notify (PvmTaskExit,
+                                             RPVM_TASK_EXIT_MSG,
+                                             LENGTH(sexp_tids),
+                                             INTEGER(sexp_tids)), 1));
 }
 
 SEXP rpvm_unnotify (SEXP sexp_what, SEXP sexp_msgtag, SEXP sexp_tids)
@@ -1234,6 +1245,37 @@ SEXP rpvm_unnotify_hostadded( SEXP s_mhid )
     return R_NilValue;
 }
 
+SEXP rpvm_siblings( )
+{
+    int *tids = 0;
+    int ntids = 0;
+    SEXP s_tids;
+    int i = 0;
+
+    ntids = pvm_siblings (&tids);
+    rpvm_chkerror (ntids, 1);
+
+    PROTECT (s_tids = NEW_INTEGER (ntids));
+    for (i = 0; i < ntids; ++i) {
+        INTEGER(s_tids)[i] = tids[i];
+    }
+    UNPROTECT (1);
+
+    if (ntids) {
+        free (tids);
+        ntids = 0;
+    }
+    return s_tids;
+}
+
+SEXP rpvm_ms_slave_exit( SEXP s_status )
+{
+    int *status = INTEGER (s_status);
+    int ptid = pvm_parent ();
+    pvm_psend (ptid, RPVM_TASK_COMPLETE_MSG, (char *) status,
+               1, PVM_INT);
+    return rpvm_exit ();
+}
 
 /* functions not yet implemented and may never be */
 /*

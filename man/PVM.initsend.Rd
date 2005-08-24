@@ -6,8 +6,7 @@
   Clears default send buffer and specifies message sending.
 }
 \usage{
-.PVM.initsend (encoding = c("Default", "Raw", "InPlace")
-.PVM.encoding
+.PVM.initsend (encoding = c("Default", "Raw", "InPlace"))
 }
 \arguments{
   \item{encoding}{a character string specifying the next message's

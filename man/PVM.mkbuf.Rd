@@ -5,10 +5,10 @@
   Creates a new message buffer
 }
 \usage{
-.PVM.mkbuf (encode = c("Default", "Raw", "InPlace"))
+.PVM.mkbuf (encoding = c("Default", "Raw", "InPlace"))
 }
 \arguments{
-  \item{encode}{a character string specifying the next message's
+  \item{encoding}{a character string specifying the next message's
     encoding scheme.  Must be one of \code{"Default"} (default),
     \code{"Raw"} or \code{"InPlace"}.}
 }

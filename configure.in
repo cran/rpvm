@@ -84,7 +84,8 @@ AC_CHECK_LIB(gpvm3,main,PVM_LIBS="",
     else
         echo "Cannot find libgpvm3"
         exit 1
-    fi  ]
+    fi  ],
+[-lpvm3]
 )
 
 AC_PATH_PROG([PVMD], [pvmd], [""], [$PATH $PVM_ROOT/lib])

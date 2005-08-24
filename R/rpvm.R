@@ -39,7 +39,7 @@ names (.PVM.encoding) <- c("Default",
                          verbose = FALSE) {
     cat ("\n")
     cat ("Try to spawn tasks...\n")
-    .PVM.spawn (task = "slaveR.sh",
+    .PVM.spawn (task = file.path (system.file (package = "rpvm"), "slaveR.sh"),
                 ntask = ntask,
                 flag = flag,
                 where = where,
@@ -73,6 +73,9 @@ names (.PVM.encoding) <- c("Default",
                    as.character (arglist),
                    as.integer (verbose),
                    PACKAGE = "rpvm")
+    if (any (tid <= 0)) {
+        warning (paste (sum (tid <= 0), "tasks failed to be start"))
+    }
     return (tids[tids > 0])
 }
 
@@ -242,14 +245,14 @@ PVM.options <- function (what, val) {
 }
 
 ### Message buffers
-.PVM.initsend <- function (encode = c("Default", "Raw", "InPlace")) {
-    encode <- .PVM.encoding[match.arg (encode)]
-    .Call ("rpvm_initsend", as.integer(encode), PACKAGE = "rpvm")
+.PVM.initsend <- function (encoding = c("Default", "Raw", "InPlace")) {
+    encoding <- .PVM.encoding[match.arg (encoding)]
+    .Call ("rpvm_initsend", as.integer(encoding), PACKAGE = "rpvm")
 }
 
-.PVM.mkbuf <- function (encode = c("Default", "Raw", "InPlace")) {
-    encode <- .PVM.encoding[match.arg (encode)]
-    .Call ("rpvm_mkbuf", as.integer (encode), PACKAGE = "rpvm")
+.PVM.mkbuf <- function (encoding = c("Default", "Raw", "InPlace")) {
+    encoding <- .PVM.encoding[match.arg (encoding)]
+    .Call ("rpvm_mkbuf", as.integer (encoding), PACKAGE = "rpvm")
 }
 
 .PVM.freebuf <- function (bufid) {
@@ -610,3 +613,8 @@ init.sprng.group <- function (group,
 
 .PVM.unserialize <- function(refhook = NULL)
     .Call("rpvm_upksexp", refhook, PACKAGE = "rpvm")
+
+
+.PVM.siblings <- function( )
+    .Call ("rpvm_siblings", PACKAGE = "rpvm")
+    
