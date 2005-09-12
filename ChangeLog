@@ -1,6 +1,13 @@
+2005-09-12  Na Li  <nali@umn.edu>
+        * DESCRIPTION: updated version to 0.6.5.
+        * R/rpvm.R: fixed bug in .PVM.spawn (tid -> tids) (thanks to Mark
+        Handcock).
+        * Misc: There have been several bug fixes since v0.6.2 (thanks to Kurt
+        Kornik).  
+
 2004-05-25  Na Li  <nali@umn.edu>
 
-	* DESCRIPTION: updated version to 0.6.1.
+	* DESCRIPTION: updated version to 0.6.2.
 	* R/rpvm.R, src/rpvm_ser.c: revert back to use .PVM.pksexp ().
 
 2004-05-16  Na Li  <nali@umn.edu>

@@ -73,8 +73,8 @@ names (.PVM.encoding) <- c("Default",
                    as.character (arglist),
                    as.integer (verbose),
                    PACKAGE = "rpvm")
-    if (any (tid <= 0)) {
-        warning (paste (sum (tid <= 0), "tasks failed to be start"))
+    if (any (tids <= 0)) {
+        warning (paste (sum (tids <= 0), "tasks failed to be start"))
     }
     return (tids[tids > 0])
 }
