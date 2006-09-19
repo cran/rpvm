@@ -1,6 +1,6 @@
 Package: rpvm
-Version: 0.6-5
-Date: Mon, 12 Sep 2005 12:20:36 CDT 
+Version: 1.0.1
+Date: $Date: 2006-09-19 14:26:15 -0500 (Tue, 19 Sep 2006) $
 Title: R interface to PVM (Parallel Virtual Machine) 
 Author: Na (Michael) Li <nali@umn.edu> and 
   A. J. Rossini <rossini@u.washington.edu>.
@@ -10,4 +10,4 @@ Description: Provides interface to PVM APIs, and examples and
   documentation for its use.  
 License: GPL version 2 or newer
 URL: http://www.r-project.org/
-Packaged: Mon Sep 12 12:27:15 2005; nali
+Packaged: Tue Sep 19 14:26:58 2006; nali

@@ -18,8 +18,6 @@
 ## 2. defined as environmental variables on each host
 ## 3. otherwise, this script provides default position.
 
-echo $1 $2 $3 >> $logfile
-
 logfile=/tmp/rpvm.$$.log
 
 if [ $# -lt 3 ]; then
