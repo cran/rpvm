@@ -16,6 +16,8 @@ if test -z "${PVM_ROOT}"; then
         PVM_ROOT=/usr/lib/pvm3
     elif test -d /usr/share/pvm3; then                  # Red Hat
         PVM_ROOT=/usr/share/pvm3
+    elif test -d /opt/local/lib/pvm; then               # MacOSX DarwinPorts
+        PVM_ROOT=/opt/local/lib/pvm
     elif test -d ${HOME}/pvm3; then                     # User installed
         PVM_ROOT=${HOME}/pvm3
     fi
@@ -53,6 +55,9 @@ AC_CHECK_HEADER(pvm3.h,PVM_INCLUDE="",
     elif test -f ${PVM_ROOT}/include/pvm3.h; then
         echo "Found in ${PVM_ROOT}/include"
         PVM_INCLUDE="-I${PVM_ROOT}/include"
+    elif test -f /opt/local/include/pvm3.h; then
+        echo "Found in /opt/local/include"
+        PVM_INCLUDE="-I/opt/local/include"
     else 
         echo "Cannot find pvm header file."
         exit 1
@@ -67,25 +72,13 @@ AC_CHECK_LIB(pvm3,main,PVM_LIBS="",
     elif test -f ${PVM_ROOT}/lib/${PVM_ARCH}/libpvm3.a; then
         echo "Found in ${PVM_ROOT}/lib/${PVM_ARCH}"
         PVM_LIBS="-L${PVM_ROOT}/lib/${PVM_ARCH}"
+    elif test -f /opt/local/lib/libpvm3.a; then
+        echo "Found in /opt/local/lib"
+        PVM_LIBS="-L/opt/local/lib"
     else
         echo "Cannot find libpvm3"
         exit 1
     fi  ]
-)
-
-AC_CHECK_LIB(gpvm3,main,PVM_LIBS="",
-[   echo "Try to find libgpvm3 ..."
-    if test -f /usr/local/lib/libgpvm3.a; then
-        echo "Found in /usr/local/lib"
-        PVM_LIBS="-L/usr/local/lib"
-    elif test -f ${PVM_ROOT}/lib/${PVM_ARCH}/libgpvm3.a; then
-        echo "Found in ${PVM_ROOT}/lib/${PVM_ARCH}"
-        PVM_LIBS="-L${PVM_ROOT}/lib/${PVM_ARCH}"
-    else
-        echo "Cannot find libgpvm3"
-        exit 1
-    fi  ],
-[-lpvm3]
 )
 
 AC_PATH_PROG([PVMD], [pvmd], [""], [$PATH $PVM_ROOT/lib])

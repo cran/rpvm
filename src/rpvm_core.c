@@ -1022,8 +1022,9 @@ SEXP rpvm_reduce_integer (SEXP sexp_data,
             func = PvmProduct;
             break;
         default :
+            /* shouldn't get here */
             error ("Unknown function specified.");
-            return;
+            return mkInt (1);
     }
     /* allocate memory for root process */
     info = pvm_reduce (func,
@@ -1069,8 +1070,9 @@ SEXP rpvm_reduce_double (SEXP sexp_data,
             func = PvmProduct;
             break;
         default :
+            /* shouldn't get here */
             error ("Unknown function specified.");
-            return;
+            return mkInt (1);
     }
     /* allocate memory for root process */
     info = pvm_reduce (func,

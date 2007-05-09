@@ -1,3 +1,11 @@
+2007-05-10  Na Li  <nali@umn.edu>
+
+	* Version 1.0.2
+	* configure.in: added additional check to make sure PVM header and
+	library files are found in Mac with PVM installed via MacPorts.
+	* DESCRIPTION: added "suggested" dependence on rsprng.
+	* src/rpvm_core.c: fixed a couple of compiling warnings.
+
 2005-09-12  Na Li  <nali@umn.edu>
         * DESCRIPTION: updated version to 0.6.5.
         * R/rpvm.R: fixed bug in .PVM.spawn (tid -> tids) (thanks to Mark
