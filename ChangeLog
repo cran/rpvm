@@ -1,3 +1,12 @@
+2010-04-16: Version 1.0-4      Na Li <wuolong@gmail.com>
+	* configure.in: Remove "Warning" from configure script because it
+	interferes with R CMD check (thanks to Kurt Hornik).
+	
+
+2009-06-09: Version 1.03      Na Li <wuolong@gmail.com>
+	* Fixed warnings due to implicit casting of (const char *) to (char *)
+	and other typos.  Passed checking with R 2.9.0.
+
 2007-05-10  Na Li  <nali@umn.edu>
 
 	* Version 1.0.2

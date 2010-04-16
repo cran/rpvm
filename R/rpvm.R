@@ -91,7 +91,7 @@ names (.PVM.encoding) <- c("Default",
 
 ### Virtual machine control
 
-.PVM.start.pvmd <- function (hosts = "", block = T) {
+.PVM.start.pvmd <- function (hosts = "", block = TRUE) {
     info <- .Call ("rpvm_start_pvmd", as.character (hosts),
                    as.integer (block), PACKAGE = "rpvm")
     .PVM.config ()
@@ -447,7 +447,7 @@ PVM.rapply <- function (X,
         stop ("X must be a matrix!")
     }
     ## Split the matrix into NTASK submatrices, use apply if NTASK = 0
-    if (NTASK == 0) {
+    if (!NTASK) {
         return (apply (X, 1, FUN))
     }
     end   <- nrow(X)
@@ -472,7 +472,7 @@ PVM.rapply <- function (X,
         range <- c (start,
                     ifelse((start + chunk - 1) > end, end, start + chunk - 1))
         ## Take a submatrix
-        work <- X[(range[1]):(range[2]),,drop=F]
+        work <- X[(range[1]):(range[2]),,drop=FALSE]
         start <- start + chunk
 
         ## Function name       
@@ -511,7 +511,7 @@ init.sprng.master <- function (children,
         cat ("Sorry, SPRNG is not available")
         return (invisible (NULL))
     }
-    if (!is.character(kindprng) || length (prngkind) > 1) {
+    if (!is.character(kindprng) || length (kindprng) > 1) {
         stop ("kindprng' must be a character string of length 1.")
     }
     if (!is.na (pmatch (kindprng, "default"))) {
@@ -558,7 +558,7 @@ init.sprng.group <- function (group,
         cat ("Sorry, SPRNG is not available")
         return (invisible (NULL))
     }
-    if (!is.character(kindprng) || length (prngkind) > 1) {
+    if (!is.character(kindprng) || length (kindprng) > 1) {
         stop ("kindprng' must be a character string of length 1.")
     }
     if (!is.na (pmatch (kindprng, "default"))) {

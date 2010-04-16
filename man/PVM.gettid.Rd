@@ -2,7 +2,7 @@
 \alias{.PVM.gettid}
 \title{Task id identified by group name and instance number}
 \description{
-  Get the task id identified by a group name and an instance number}
+  Get the task id identified by a group name and an instance number
 }
 \usage{
 .PVM.gettid (group, inum = 0:(.PVM.gsize(group) - 1))

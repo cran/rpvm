@@ -19,13 +19,11 @@
 }
 \value{
   A data frame.  One row for each task.  Names of the columns are,
-  \itemize{
-    \item{tid}{task id}
-    \item{parent}{parent task id}
-    \item{host}{host id}
-    \item{status}{task running status (see \code{\link{.PVM.pstats}}).}
-    \item{name}{string, name of the spawned task}
-  }
+  \item{tid}{task id}
+  \item{parent}{parent task id}
+  \item{host}{host id}
+  \item{status}{task running status (see \code{\link{.PVM.pstats}}).}
+  \item{name}{string, name of the spawned task}
 }
 \details{
  \code{.PVM.tasks} returns information about tasks presently running on

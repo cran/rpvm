@@ -4,10 +4,9 @@ AC_INIT(DESCRIPTION)
 
 AC_PROG_CC()
 
-echo -n "Check if PVM_ROOT is defined... "
+echo "Check if PVM_ROOT is defined... "
 if test -z "${PVM_ROOT}"; then
     echo "no"
-    echo "Warning: PVM_ROOT not defined."
     echo "I'll try to build rpvm but you need set PVM_ROOT"
     echo "before use pvm. See pvm_intro(1PVM)"
     echo ""
@@ -22,7 +21,7 @@ if test -z "${PVM_ROOT}"; then
         PVM_ROOT=${HOME}/pvm3
     fi
 else
-    echo "${PVM_ROOT}"
+    echo "Yes! PVM_ROOT=${PVM_ROOT}"
 fi
 
 if test -n "${PVM_ROOT}"; then

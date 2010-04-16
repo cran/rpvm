@@ -41,7 +41,7 @@ char **toPPChar (SEXP sexp_str)
     /* Temporary memory will be released after exiting .Call */
     ppchar = (char **) R_alloc (len + 1, sizeof (char *));
     for (i = 0; i < len; ++i) {
-        ppchar[i] = CHAR (STRING_ELT (sexp_str, i));
+        ppchar[i] = (char *) CHAR (STRING_ELT (sexp_str, i));
     }
     ppchar[len] = (char *) 0;
     return ppchar;

@@ -7,6 +7,7 @@
 
 #define RPVM_TASK_COMPLETE_MSG 1000
 #define RPVM_TASK_EXIT_MSG     1001
+#define CHAR_RW(x)             ((char *) CHAR(x))
 
 int rpvm_chkerror (int error_code, int exit_pvm)
 {
@@ -253,10 +254,10 @@ SEXP rpvm_spawn (SEXP sexp_task,
 
     PROTECT (sexp_tids  = allocVector (INTSXP, ntask));
     /* spawn tasks */
-    numt = pvm_spawn (CHAR (STRING_ELT (sexp_task, 0)),
+    numt = pvm_spawn (CHAR_RW (STRING_ELT (sexp_task, 0)),
                       arglist,
                       flag,
-                      CHAR (STRING_ELT (sexp_where, 0)),
+                      CHAR_RW (STRING_ELT (sexp_where, 0)),
                       ntask,
                       INTEGER (sexp_tids));
     UNPROTECT (1);
@@ -365,7 +366,7 @@ SEXP rpvm_pkdouble (SEXP sexp_np, SEXP sexp_stride)
 
 SEXP rpvm_pkstr (SEXP sexp_cp)
 {
-    char *cp = CHAR (STRING_ELT (sexp_cp, 0));
+    char *cp = CHAR_RW (STRING_ELT (sexp_cp, 0));
     return mkInt (rpvm_chkerror (pvm_pkstr (cp), 1));
 }
 
@@ -399,7 +400,7 @@ SEXP rpvm_pkstrvec (SEXP sexp_str)
     val = pvm_pkint (&len, 1, 1);
     rpvm_chkerror (val, 1);
     for (i = 0; i < len; ++i) {
-        val = pvm_pkstr (CHAR (STRING_ELT (sexp_str, i)));
+        val = pvm_pkstr (CHAR_RW (STRING_ELT (sexp_str, i)));
         if (val < 0) {
             return mkInt (rpvm_chkerror (val, 0));
         }
@@ -779,7 +780,7 @@ SEXP rpvm_mstats (SEXP sexp_hosts)
     SEXP sexp_mstat;
     PROTECT (sexp_mstat  = allocVector (STRSXP, LENGTH (sexp_hosts)));
     for (i = 0; i < LENGTH (sexp_hosts); ++i) {
-        mstat = pvm_mstat (CHAR (STRING_ELT (sexp_hosts, i)));
+        mstat = pvm_mstat (CHAR_RW (STRING_ELT (sexp_hosts, i)));
         switch (mstat) {
             case PvmOk :
                 SET_STRING_ELT (sexp_mstat,  i, mkChar ("OK"));
@@ -804,7 +805,7 @@ SEXP rpvm_mstats (SEXP sexp_hosts)
 
 SEXP rpvm_joingroup (SEXP sexp_group)
 {
-    char *group = CHAR (STRING_ELT (sexp_group, 0));
+    char *group = CHAR_RW (STRING_ELT (sexp_group, 0));
     int inum = pvm_joingroup (group);
     /* instance number of the task in this group */
     return mkInt (rpvm_chkerror (inum, 1));
@@ -812,14 +813,14 @@ SEXP rpvm_joingroup (SEXP sexp_group)
 
 SEXP rpvm_lvgroup (SEXP sexp_group)
 {
-    char *group = CHAR (STRING_ELT (sexp_group, 0));
+    char *group = CHAR_RW (STRING_ELT (sexp_group, 0));
     int info = pvm_lvgroup (group);
     return mkInt (rpvm_chkerror (info, 1));
 }
 
 SEXP rpvm_gettid (SEXP sexp_group, SEXP sexp_inums)
 {
-    char *group = CHAR (STRING_ELT (sexp_group, 0));
+    char *group = CHAR_RW (STRING_ELT (sexp_group, 0));
     int i = 0;
     int tid;
     SEXP sexp_tids;
@@ -834,7 +835,7 @@ SEXP rpvm_gettid (SEXP sexp_group, SEXP sexp_inums)
 
 SEXP rpvm_getinst (SEXP sexp_group, SEXP sexp_tids)
 {
-    char *group = CHAR (STRING_ELT (sexp_group, 0));
+    char *group = CHAR_RW (STRING_ELT (sexp_group, 0));
     int i = 0;
     SEXP sexp_inums;
     PROTECT (sexp_inums = allocVector (INTSXP, LENGTH (sexp_tids)));
@@ -848,14 +849,14 @@ SEXP rpvm_getinst (SEXP sexp_group, SEXP sexp_tids)
 
 SEXP rpvm_gsize (SEXP sexp_group)
 {
-    char *group = CHAR (STRING_ELT (sexp_group, 0));
+    char *group = CHAR_RW (STRING_ELT (sexp_group, 0));
     int size = pvm_gsize (group);
     return mkInt (rpvm_chkerror (size, 1));
 }
 
 SEXP rpvm_barrier (SEXP sexp_group, SEXP sexp_count)
 {
-    char *group = CHAR (STRING_ELT (sexp_group, 0));
+    char *group = CHAR_RW (STRING_ELT (sexp_group, 0));
     int count = INTEGER (sexp_count)[0];
     int info = pvm_barrier (group, count);
     return mkInt (rpvm_chkerror (info, 1));
@@ -863,7 +864,7 @@ SEXP rpvm_barrier (SEXP sexp_group, SEXP sexp_count)
 
 SEXP rpvm_bcast (SEXP sexp_group, SEXP sexp_msgtag)
 {
-    char *group = CHAR (STRING_ELT (sexp_group, 0));
+    char *group = CHAR_RW (STRING_ELT (sexp_group, 0));
     int msgtag = INTEGER (sexp_msgtag)[0];
     int info = pvm_bcast (group, msgtag);
     return mkInt (rpvm_chkerror (info, 1));
@@ -875,7 +876,7 @@ SEXP rpvm_scatter_integer (SEXP sexp_data,
                            SEXP sexp_group,
                            SEXP sexp_rootginst)
 {
-    char *group = CHAR (STRING_ELT (sexp_group, 0));
+    char *group = CHAR_RW (STRING_ELT (sexp_group, 0));
     int count   = INTEGER (sexp_count)[0];
     int msgtag  = INTEGER (sexp_msgtag)[0];
     int rootginst = INTEGER (sexp_rootginst)[0];
@@ -898,7 +899,7 @@ SEXP rpvm_scatter_double (SEXP sexp_data,
                           SEXP sexp_group,
                           SEXP sexp_rootginst)
 {
-    char *group = CHAR (STRING_ELT (sexp_group, 0));
+    char *group = CHAR_RW (STRING_ELT (sexp_group, 0));
     int count   = INTEGER (sexp_count)[0];
     int msgtag  = INTEGER (sexp_msgtag)[0];
     int rootginst = INTEGER (sexp_rootginst)[0];
@@ -921,7 +922,7 @@ SEXP rpvm_gather_integer (SEXP sexp_data,
                           SEXP sexp_group,
                           SEXP sexp_rootginst)
 {
-    char *group = CHAR (STRING_ELT (sexp_group, 0));
+    char *group = CHAR_RW (STRING_ELT (sexp_group, 0));
     int count   = INTEGER (sexp_count)[0];
     int msgtag  = INTEGER (sexp_msgtag)[0];
     int rootginst = INTEGER (sexp_rootginst)[0];
@@ -958,7 +959,7 @@ SEXP rpvm_gather_double (SEXP sexp_data,
                          SEXP sexp_group,
                          SEXP sexp_rootginst)
 {
-    char *group = CHAR (STRING_ELT (sexp_group, 0));
+    char *group = CHAR_RW (STRING_ELT (sexp_group, 0));
     int count   = INTEGER (sexp_count)[0];
     int msgtag  = INTEGER (sexp_msgtag)[0];
     int rootginst = INTEGER (sexp_rootginst)[0];
@@ -996,7 +997,7 @@ SEXP rpvm_reduce_integer (SEXP sexp_data,
                           SEXP sexp_group,
                           SEXP sexp_rootginst)
 {
-    char *group   = CHAR (STRING_ELT (sexp_group, 0));
+    char *group   = CHAR_RW (STRING_ELT (sexp_group, 0));
     int count     = INTEGER (sexp_count)[0];
     int msgtag    = INTEGER (sexp_msgtag)[0];
     int rootginst = INTEGER (sexp_rootginst)[0];
@@ -1045,7 +1046,7 @@ SEXP rpvm_reduce_double (SEXP sexp_data,
                          SEXP sexp_group,
                          SEXP sexp_rootginst)
 {
-    char *group   = CHAR (STRING_ELT (sexp_group, 0));
+    char *group   = CHAR_RW (STRING_ELT (sexp_group, 0));
     int count     = INTEGER (sexp_count)[0];
     int msgtag    = INTEGER (sexp_msgtag)[0];
     int rootginst = INTEGER (sexp_rootginst)[0];
@@ -1192,7 +1193,7 @@ SEXP rpvm_putinfo (SEXP sexp_name, SEXP sexp_bufid, SEXP sexp_flags)
 {
     int bufid = INTEGER (sexp_bufid)[0];
     int flags  = INTEGER (sexp_flags)[0];
-    char *name = CHAR (STRING_ELT (sexp_name, 0));
+    char *name = CHAR_RW (STRING_ELT (sexp_name, 0));
     int index = pvm_putinfo (name, bufid, flags);
     return mkInt (rpvm_chkerror (index, 1));
 }
@@ -1201,7 +1202,7 @@ SEXP rpvm_recvinfo (SEXP sexp_name, SEXP sexp_index, SEXP sexp_flags)
 {
     int index = INTEGER (sexp_index)[0];
     int flags  = INTEGER (sexp_flags)[0];
-    char *name = CHAR (STRING_ELT (sexp_name, 0));
+    char *name = CHAR_RW (STRING_ELT (sexp_name, 0));
     int bufid = pvm_recvinfo (name, index, flags);
     return mkInt (rpvm_chkerror (bufid, 1));
 }
@@ -1210,13 +1211,13 @@ SEXP rpvm_delinfo (SEXP sexp_name, SEXP sexp_index, SEXP sexp_flags)
 {
     int index = INTEGER (sexp_index)[0];
     int flags  = INTEGER (sexp_flags)[0];
-    char *name = CHAR (STRING_ELT (sexp_name, 0));
+    char *name = CHAR_RW (STRING_ELT (sexp_name, 0));
     int info = pvm_delinfo (name, index, flags);
 }
 
 SEXP rpvm_getmboxinfo (SEXP sexp_pattern, SEXP sexp_classes)
 {
-    char *pattern = CHAR (STRING_ELT (sexp_pattern, 0));
+    char *pattern = CHAR_RW (STRING_ELT (sexp_pattern, 0));
     int nclasses = LENGTH (sexp_classes);
 }
 

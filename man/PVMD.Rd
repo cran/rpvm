@@ -9,7 +9,7 @@
   Start new pvm daemon, add or delete hosts and stop pvmd.
 }
 \usage{
-.PVM.start.pvmd (hosts = "", block = T)
+.PVM.start.pvmd (hosts = "", block = TRUE)
 .PVM.addhosts (hosts)
 .PVM.delhosts (hosts)
 .PVM.halt ()

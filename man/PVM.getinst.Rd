@@ -2,7 +2,7 @@
 \alias{.PVM.getinst}
 \title{Instance number identified by group name and task id}
 \description{
-  Get the instance numbers identified by a group name and task ids}
+  Get the instance numbers identified by a group name and task ids
 }
 \usage{
 .PVM.getinst (group, tids = .PVM.mytid ())
